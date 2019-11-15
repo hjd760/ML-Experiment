@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<!-- saved from url=(0041)https://www.zybuluo.com/mymy/note/1621347 -->
+<html class="theme theme-white"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    
+    <meta name="description" content="Cmd Markdown 编辑阅读器，支持实时同步预览，区分写作和阅读模式，支持在线存储，分享文稿网址。">
+    <meta name="author" content="Jiawei Zhang">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <title>基于矩阵分解的推荐系统 - 作业部落 Cmd Markdown 编辑阅读器</title>
+
+
+    <link href="https://www.zybuluo.com/static/img/favicon.png" type="image/x-icon" rel="icon">
+
+    <link href="./基于矩阵分解的推荐系统 - 作业部落 Cmd Markdown 编辑阅读器_files/1bc053c8.base.lib.min.css" rel="stylesheet" media="screen">
+
+
+    
+    <!-- id="prettify-style" will be used to get the link element below and change href to change prettify code, so it can't be in beginmin/endmin block. -->
+    <link id="prettify-style" href="./基于矩阵分解的推荐系统 - 作业部落 Cmd Markdown 编辑阅读器_files/prettify-cmd.css" type="text/css" rel="stylesheet">
+    <!--
+    <link id="mermaid-style" href="https://www.zybuluo.com/static/editor/libs/mermaid/mermaid.forest.css" type="text/css" rel="stylesheet">
+    -->
+    <link href="./基于矩阵分解的推荐系统 - 作业部落 Cmd Markdown 编辑阅读器_files/45c7d56d.layout.min.css" rel="stylesheet" media="screen">
+
+
+    
+
+    <script async="" src="./基于矩阵分解的推荐系统 - 作业部落 Cmd Markdown 编辑阅读器_files/analytics.js.下载"></script><script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-44461741-1', 'zybuluo.com');
+      ga('send', 'pageview');
+    </script>
+<style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Hover_Arrow {position: absolute; width: 15px; height: 11px; cursor: pointer}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; color: #666666}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_Menu_Close {position: absolute; width: 31px; height: 31px; top: -15px; left: -15px}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MathJax_SVG_Display {text-align: center; margin: 1em 0em; position: relative; display: block; width: 100%}
+#MathJax_SVG_Tooltip {background-color: InfoBackground; color: InfoText; border: 1px solid black; box-shadow: 2px 2px 5px #AAAAAA; -webkit-box-shadow: 2px 2px 5px #AAAAAA; -moz-box-shadow: 2px 2px 5px #AAAAAA; -khtml-box-shadow: 2px 2px 5px #AAAAAA; padding: 3px 4px; z-index: 401; position: absolute; left: 0; top: 0; width: auto; height: auto; display: none}
+.MathJax_SVG {display: inline; font-style: normal; font-weight: normal; line-height: normal; font-size: 100%; font-size-adjust: none; text-indent: 0; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; direction: ltr; border: 0; padding: 0; margin: 0}
+.MathJax_SVG * {transition: none; -webkit-transition: none; -moz-transition: none; -ms-transition: none; -o-transition: none}
+.mjx-svg-href {fill: blue; stroke: blue}
+.MathJax_SVG_Processing {visibility: hidden; position: absolute; top: 0; left: 0; width: 0; height: 0; overflow: hidden; display: block}
+.MathJax_SVG_Processed {display: none!important}
+.MathJax_SVG_ExBox {display: block; overflow: hidden; width: 1px; height: 60ex}
+.MathJax_SVG .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head>
+
+<body class="theme  theme-white pace-done"><div style="visibility: hidden; overflow: hidden; position: absolute; top: 0px; height: 1px; width: auto; padding: 0px; border: 0px; margin: 0px; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal;"><div id="MathJax_SVG_Hidden"></div><svg><defs id="MathJax_SVG_glyphs"><path id="MJMATHI-52" stroke-width="1" d="M230 637Q203 637 198 638T193 649Q193 676 204 682Q206 683 378 683Q550 682 564 680Q620 672 658 652T712 606T733 563T739 529Q739 484 710 445T643 385T576 351T538 338L545 333Q612 295 612 223Q612 212 607 162T602 80V71Q602 53 603 43T614 25T640 16Q668 16 686 38T712 85Q717 99 720 102T735 105Q755 105 755 93Q755 75 731 36Q693 -21 641 -21H632Q571 -21 531 4T487 82Q487 109 502 166T517 239Q517 290 474 313Q459 320 449 321T378 323H309L277 193Q244 61 244 59Q244 55 245 54T252 50T269 48T302 46H333Q339 38 339 37T336 19Q332 6 326 0H311Q275 2 180 2Q146 2 117 2T71 2T50 1Q33 1 33 10Q33 12 36 24Q41 43 46 45Q50 46 61 46H67Q94 46 127 49Q141 52 146 61Q149 65 218 339T287 628Q287 635 230 637ZM630 554Q630 586 609 608T523 636Q521 636 500 636T462 637H440Q393 637 386 627Q385 624 352 494T319 361Q319 360 388 360Q466 361 492 367Q556 377 592 426Q608 449 619 486T630 554Z"></path><path id="MJMATHI-6E" stroke-width="1" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path><path id="MJMAIN-5F" stroke-width="1" d="M0 -62V-25H499V-62H0Z"></path><path id="MJMATHI-75" stroke-width="1" d="M21 287Q21 295 30 318T55 370T99 420T158 442Q204 442 227 417T250 358Q250 340 216 246T182 105Q182 62 196 45T238 27T291 44T328 78L339 95Q341 99 377 247Q407 367 413 387T427 416Q444 431 463 431Q480 431 488 421T496 402L420 84Q419 79 419 68Q419 43 426 35T447 26Q469 29 482 57T512 145Q514 153 532 153Q551 153 551 144Q550 139 549 130T540 98T523 55T498 17T462 -8Q454 -10 438 -10Q372 -10 347 46Q345 45 336 36T318 21T296 6T267 -6T233 -11Q189 -11 155 7Q103 38 103 113Q103 170 138 262T173 379Q173 380 173 381Q173 390 173 393T169 400T158 404H154Q131 404 112 385T82 344T65 302T57 280Q55 278 41 278H27Q21 284 21 287Z"></path><path id="MJMATHI-73" stroke-width="1" d="M131 289Q131 321 147 354T203 415T300 442Q362 442 390 415T419 355Q419 323 402 308T364 292Q351 292 340 300T328 326Q328 342 337 354T354 372T367 378Q368 378 368 379Q368 382 361 388T336 399T297 405Q249 405 227 379T204 326Q204 301 223 291T278 274T330 259Q396 230 396 163Q396 135 385 107T352 51T289 7T195 -10Q118 -10 86 19T53 87Q53 126 74 143T118 160Q133 160 146 151T160 120Q160 94 142 76T111 58Q109 57 108 57T107 55Q108 52 115 47T146 34T201 27Q237 27 263 38T301 66T318 97T323 122Q323 150 302 164T254 181T195 196T148 231Q131 256 131 289Z"></path><path id="MJMATHI-65" stroke-width="1" d="M39 168Q39 225 58 272T107 350T174 402T244 433T307 442H310Q355 442 388 420T421 355Q421 265 310 237Q261 224 176 223Q139 223 138 221Q138 219 132 186T125 128Q125 81 146 54T209 26T302 45T394 111Q403 121 406 121Q410 121 419 112T429 98T420 82T390 55T344 24T281 -1T205 -11Q126 -11 83 42T39 168ZM373 353Q367 405 305 405Q272 405 244 391T199 357T170 316T154 280T149 261Q149 260 169 260Q282 260 327 284T373 353Z"></path><path id="MJMATHI-72" stroke-width="1" d="M21 287Q22 290 23 295T28 317T38 348T53 381T73 411T99 433T132 442Q161 442 183 430T214 408T225 388Q227 382 228 382T236 389Q284 441 347 441H350Q398 441 422 400Q430 381 430 363Q430 333 417 315T391 292T366 288Q346 288 334 299T322 328Q322 376 378 392Q356 405 342 405Q286 405 239 331Q229 315 224 298T190 165Q156 25 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 114 189T154 366Q154 405 128 405Q107 405 92 377T68 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path><path id="MJMAIN-2C" stroke-width="1" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path><path id="MJMATHI-69" stroke-width="1" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path><path id="MJMATHI-74" stroke-width="1" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path><path id="MJMATHI-6D" stroke-width="1" d="M21 287Q22 293 24 303T36 341T56 388T88 425T132 442T175 435T205 417T221 395T229 376L231 369Q231 367 232 367L243 378Q303 442 384 442Q401 442 415 440T441 433T460 423T475 411T485 398T493 385T497 373T500 364T502 357L510 367Q573 442 659 442Q713 442 746 415T780 336Q780 285 742 178T704 50Q705 36 709 31T724 26Q752 26 776 56T815 138Q818 149 821 151T837 153Q857 153 857 145Q857 144 853 130Q845 101 831 73T785 17T716 -10Q669 -10 648 17T627 73Q627 92 663 193T700 345Q700 404 656 404H651Q565 404 506 303L499 291L466 157Q433 26 428 16Q415 -11 385 -11Q372 -11 364 -4T353 8T350 18Q350 29 384 161L420 307Q423 322 423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 181Q151 335 151 342Q154 357 154 369Q154 405 129 405Q107 405 92 377T69 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path><path id="MJMATHI-50" stroke-width="1" d="M287 628Q287 635 230 637Q206 637 199 638T192 648Q192 649 194 659Q200 679 203 681T397 683Q587 682 600 680Q664 669 707 631T751 530Q751 453 685 389Q616 321 507 303Q500 302 402 301H307L277 182Q247 66 247 59Q247 55 248 54T255 50T272 48T305 46H336Q342 37 342 35Q342 19 335 5Q330 0 319 0Q316 0 282 1T182 2Q120 2 87 2T51 1Q33 1 33 11Q33 13 36 25Q40 41 44 43T67 46Q94 46 127 49Q141 52 146 61Q149 65 218 339T287 628ZM645 554Q645 567 643 575T634 597T609 619T560 635Q553 636 480 637Q463 637 445 637T416 636T404 636Q391 635 386 627Q384 621 367 550T332 412T314 344Q314 342 395 342H407H430Q542 342 590 392Q617 419 631 471T645 554Z"></path><path id="MJMATHI-4B" stroke-width="1" d="M285 628Q285 635 228 637Q205 637 198 638T191 647Q191 649 193 661Q199 681 203 682Q205 683 214 683H219Q260 681 355 681Q389 681 418 681T463 682T483 682Q500 682 500 674Q500 669 497 660Q496 658 496 654T495 648T493 644T490 641T486 639T479 638T470 637T456 637Q416 636 405 634T387 623L306 305Q307 305 490 449T678 597Q692 611 692 620Q692 635 667 637Q651 637 651 648Q651 650 654 662T659 677Q662 682 676 682Q680 682 711 681T791 680Q814 680 839 681T869 682Q889 682 889 672Q889 650 881 642Q878 637 862 637Q787 632 726 586Q710 576 656 534T556 455L509 418L518 396Q527 374 546 329T581 244Q656 67 661 61Q663 59 666 57Q680 47 717 46H738Q744 38 744 37T741 19Q737 6 731 0H720Q680 3 625 3Q503 3 488 0H478Q472 6 472 9T474 27Q478 40 480 43T491 46H494Q544 46 544 71Q544 75 517 141T485 216L427 354L359 301L291 248L268 155Q245 63 245 58Q245 51 253 49T303 46H334Q340 37 340 35Q340 19 333 5Q328 0 317 0Q314 0 280 1T180 2Q118 2 85 2T49 1Q31 1 31 11Q31 13 34 25Q38 41 42 43T65 46Q92 46 125 49Q139 52 144 61Q147 65 216 339T285 628Z"></path><path id="MJMATHI-51" stroke-width="1" d="M399 -80Q399 -47 400 -30T402 -11V-7L387 -11Q341 -22 303 -22Q208 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435Q740 255 592 107Q529 47 461 16L444 8V3Q444 2 449 -24T470 -66T516 -82Q551 -82 583 -60T625 -3Q631 11 638 11Q647 11 649 2Q649 -6 639 -34T611 -100T557 -165T481 -194Q399 -194 399 -87V-80ZM636 468Q636 523 621 564T580 625T530 655T477 665Q429 665 379 640Q277 591 215 464T153 216Q153 110 207 59Q231 38 236 38V46Q236 86 269 120T347 155Q372 155 390 144T417 114T429 82T435 55L448 64Q512 108 557 185T619 334T636 468ZM314 18Q362 18 404 39L403 49Q399 104 366 115Q354 117 347 117Q344 117 341 117T337 118Q317 118 296 98T274 52Q274 18 314 18Z"></path><path id="MJMATHI-3BB" stroke-width="1" d="M166 673Q166 685 183 694H202Q292 691 316 644Q322 629 373 486T474 207T524 67Q531 47 537 34T546 15T551 6T555 2T556 -2T550 -11H482Q457 3 450 18T399 152L354 277L340 262Q327 246 293 207T236 141Q211 112 174 69Q123 9 111 -1T83 -12Q47 -12 47 20Q47 37 61 52T199 187Q229 216 266 252T321 306L338 322Q338 323 288 462T234 612Q214 657 183 657Q166 657 166 673Z"></path><path id="MJMATHI-54" stroke-width="1" d="M40 437Q21 437 21 445Q21 450 37 501T71 602L88 651Q93 669 101 677H569H659Q691 677 697 676T704 667Q704 661 687 553T668 444Q668 437 649 437Q640 437 637 437T631 442L629 445Q629 451 635 490T641 551Q641 586 628 604T573 629Q568 630 515 631Q469 631 457 630T439 622Q438 621 368 343T298 60Q298 48 386 46Q418 46 427 45T436 36Q436 31 433 22Q429 4 424 1L422 0Q419 0 415 0Q410 0 363 1T228 2Q99 2 64 0H49Q43 6 43 9T45 27Q49 40 55 46H83H94Q174 46 189 55Q190 56 191 56Q196 59 201 76T241 233Q258 301 269 344Q339 619 339 625Q339 630 310 630H279Q212 630 191 624Q146 614 121 583T67 467Q60 445 57 441T43 437H40Z"></path><path id="MJMAIN-2217" stroke-width="1" d="M229 286Q216 420 216 436Q216 454 240 464Q241 464 245 464T251 465Q263 464 273 456T283 436Q283 419 277 356T270 286L328 328Q384 369 389 372T399 375Q412 375 423 365T435 338Q435 325 425 315Q420 312 357 282T289 250L355 219L425 184Q434 175 434 161Q434 146 425 136T401 125Q393 125 383 131T328 171L270 213Q283 79 283 63Q283 53 276 44T250 35Q231 35 224 44T216 63Q216 80 222 143T229 213L171 171Q115 130 110 127Q106 124 100 124Q87 124 76 134T64 161Q64 166 64 169T67 175T72 181T81 188T94 195T113 204T138 215T170 230T210 250L74 315Q65 324 65 338Q65 353 74 363T98 374Q106 374 116 368T171 328L229 286Z"></path><path id="MJMAIN-29" stroke-width="1" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path><path id="MJMAIN-2212" stroke-width="1" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path><path id="MJMAIN-31" stroke-width="1" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path><path id="MJMATHI-6A" stroke-width="1" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path><path id="MJMAIN-3E" stroke-width="1" d="M84 520Q84 528 88 533T96 539L99 540Q106 540 253 471T544 334L687 265Q694 260 694 250T687 235Q685 233 395 96L107 -40H101Q83 -38 83 -20Q83 -19 83 -17Q82 -10 98 -1Q117 9 248 71Q326 108 378 132L626 250L378 368Q90 504 86 509Q84 513 84 520Z"></path><path id="MJMAIN-30" stroke-width="1" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path><path id="MJMATHI-4C" stroke-width="1" d="M228 637Q194 637 192 641Q191 643 191 649Q191 673 202 682Q204 683 217 683Q271 680 344 680Q485 680 506 683H518Q524 677 524 674T522 656Q517 641 513 637H475Q406 636 394 628Q387 624 380 600T313 336Q297 271 279 198T252 88L243 52Q243 48 252 48T311 46H328Q360 46 379 47T428 54T478 72T522 106T564 161Q580 191 594 228T611 270Q616 273 628 273H641Q647 264 647 262T627 203T583 83T557 9Q555 4 553 3T537 0T494 -1Q483 -1 418 -1T294 0H116Q32 0 32 10Q32 17 34 24Q39 43 44 45Q48 46 59 46H65Q92 46 125 49Q139 52 144 61Q147 65 216 339T285 628Q285 635 228 637Z"></path><path id="MJMATHI-76" stroke-width="1" d="M173 380Q173 405 154 405Q130 405 104 376T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Q21 294 29 316T53 368T97 419T160 441Q202 441 225 417T249 361Q249 344 246 335Q246 329 231 291T200 202T182 113Q182 86 187 69Q200 26 250 26Q287 26 319 60T369 139T398 222T409 277Q409 300 401 317T383 343T365 361T357 383Q357 405 376 424T417 443Q436 443 451 425T467 367Q467 340 455 284T418 159T347 40T241 -11Q177 -11 139 22Q102 54 102 117Q102 148 110 181T151 298Q173 362 173 380Z"></path><path id="MJMATHI-61" stroke-width="1" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path><path id="MJMATHI-6C" stroke-width="1" d="M117 59Q117 26 142 26Q179 26 205 131Q211 151 215 152Q217 153 225 153H229Q238 153 241 153T246 151T248 144Q247 138 245 128T234 90T214 43T183 6T137 -11Q101 -11 70 11T38 85Q38 97 39 102L104 360Q167 615 167 623Q167 626 166 628T162 632T157 634T149 635T141 636T132 637T122 637Q112 637 109 637T101 638T95 641T94 647Q94 649 96 661Q101 680 107 682T179 688Q194 689 213 690T243 693T254 694Q266 694 266 686Q266 675 193 386T118 83Q118 81 118 75T117 65V59Z"></path><path id="MJMATHI-64" stroke-width="1" d="M366 683Q367 683 438 688T511 694Q523 694 523 686Q523 679 450 384T375 83T374 68Q374 26 402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487H491Q506 153 506 145Q506 140 503 129Q490 79 473 48T445 8T417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157Q33 205 53 255T101 341Q148 398 195 420T280 442Q336 442 364 400Q369 394 369 396Q370 400 396 505T424 616Q424 629 417 632T378 637H357Q351 643 351 645T353 664Q358 683 366 683ZM352 326Q329 405 277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q233 26 290 98L298 109L352 326Z"></path><path id="MJMATHI-6F" stroke-width="1" d="M201 -11Q126 -11 80 38T34 156Q34 221 64 279T146 380Q222 441 301 441Q333 441 341 440Q354 437 367 433T402 417T438 387T464 338T476 268Q476 161 390 75T201 -11ZM121 120Q121 70 147 48T206 26Q250 26 289 58T351 142Q360 163 374 216T388 308Q388 352 370 375Q346 405 306 405Q243 405 195 347Q158 303 140 230T121 120Z"></path><path id="MJMAIN-5E" stroke-width="1" d="M112 560L249 694L257 686Q387 562 387 560L361 531Q359 532 303 581L250 627L195 580Q182 569 169 557T148 538L140 532Q138 530 125 546L112 560Z"></path><path id="MJMATHI-3B7" stroke-width="1" d="M21 287Q22 290 23 295T28 317T38 348T53 381T73 411T99 433T132 442Q156 442 175 435T205 417T221 395T229 376L231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336V326Q503 302 439 53Q381 -182 377 -189Q364 -216 332 -216Q319 -216 310 -208T299 -186Q299 -177 358 57L420 307Q423 322 423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 114 189T154 366Q154 405 128 405Q107 405 92 377T68 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></defs></svg></div><div id="MathJax_Message" style="display: none;"></div><div class="pace  pace-inactive"><div class="pace-progress" data-progress-text="100%" data-progress="99" style="width: 100%;">
+  <div class="pace-progress-inner"></div>
+</div>
+<div class="pace-activity"></div></div>
+
+    <div id="global-prompt-alert" class="hide alert alert-warning">
+        <span id="global-prompt-message"></span>
+        <a id="close-global-prompt-alert" href="https://www.zybuluo.com/mymy/note/1621347">[关闭]</a>
+    </div>
+
+    <!-- zybuluo's body -->
+    
+
+
+
+
+
+
+
+<!-- mdeditor's body -->
+
+
+
+
+
+
+<div id="editor-reader-full" class="editor-reader-full-shown" style="position: static; padding-right: 75px;">
+    <div id="reader-full-topInfo" class="reader-full-topInfo-shown">
+        <span>
+            <code>@mymy</code>
+        </span>
+        <code><span class="article-updated-date">2019-10-19 14:57</span></code>
+        <code><span>字数 </span><span class="article-characters">2859</span></code>
+        <code><span>阅读 </span><span class="article-read">312</span></code>
+    </div>
+    <div id="wmd-preview" class="wmd-preview wmd-preview-full-reader" data-medium-element="true" style="left: 0px;"><div class="md-section-divider"></div><div class="md-section-divider"></div><h1 data-anchor-id="gqbc" id="基于矩阵分解的推荐系统">基于矩阵分解的推荐系统</h1><p data-anchor-id="f9af"><code>机器学习</code> <code>实验</code></p><hr><p data-anchor-id="anqw">You can click <a href="https://www.zybuluo.com/mymy/note/1621348" target="_blank">here</a> to get the English version.</p><div class="md-section-divider"></div><h2 data-anchor-id="hz34" id="实验目的">实验目的</h2><ol data-anchor-id="cfao">
+<li>探索推荐系统的搭建过程</li>
+<li>理解矩阵分解的原理</li>
+<li>熟练对梯度下降的运用</li>
+<li>在简单小规模数据集上实现推荐系统，培养工程能力</li>
+</ol><div class="md-section-divider"></div><h2 data-anchor-id="bn58" id="数据集描述">数据集描述</h2><ol data-anchor-id="xhe6">
+<li>采用<a href="http://files.grouplens.org/datasets/movielens/ml-100k.zip" target="_blank">MovieLens-100k</a>数据集</li>
+<li>u.data -- 由943个用户对1682个电影的10000条评分组成。每个用户至少评分20部电影。用户和电影从1号开始连续编号。数据是随机排序的。</li>
+</ol><table data-anchor-id="0uqv" class="table table-striped-white table-bordered">
+<thead>
+<tr>
+ <th>user id</th>
+ <th>item id</th>
+ <th>rating</th>
+ <th>timestamp</th>
+</tr>
+</thead>
+<tbody><tr>
+ <td>196</td>
+ <td>242</td>
+ <td>3</td>
+ <td>881250949</td>
+</tr>
+<tr>
+ <td>186</td>
+ <td>302</td>
+ <td>3</td>
+ <td>891717742</td>
+</tr>
+<tr>
+ <td>22</td>
+ <td>377</td>
+ <td>1</td>
+ <td>878887116</td>
+</tr>
+<tr>
+ <td>244</td>
+ <td>51</td>
+ <td>2</td>
+ <td>880606923</td>
+</tr>
+<tr>
+ <td>166</td>
+ <td>346</td>
+ <td>1</td>
+ <td>886397596</td>
+</tr>
+</tbody></table><p data-anchor-id="pk58">3. 数据集u1.base / u1.test到u5.base / u5.test都是将u.data数据集按照80% / 20%的比例分割的训练集和测试集。 <br>
+4. 也可按照自己的评估方法划分训练集和验证集。</p><div class="md-section-divider"></div><h2 data-anchor-id="twx4" id="实验环境">实验环境</h2><p data-anchor-id="bqr8"><a href="https://www.python.org/" target="_blank">python3</a>，至少包含下列python包：<a href="http://scikit-learn.org/stable/" target="_blank">sklearn</a>，<a href="http://www.numpy.org/" target="_blank">numpy</a>，<a href="http://jupyter.org/" target="_blank">jupyter</a>，<a href="https://matplotlib.org/" target="_blank">matplotlib</a>。 <br>
+建议直接安装<a href="https://anaconda.org/" target="_blank">anaconda3</a>，其已经内置了以上python包。</p><div class="md-section-divider"></div><h2 data-anchor-id="3kzt" id="实验时间及地点">实验时间及地点</h2><p data-anchor-id="svym">2019-11-16 上午8:50-12:15 B7-138 (谭明奎老师)</p><div class="md-section-divider"></div><h2 data-anchor-id="zjth" id="提交截止时间">提交截止时间</h2><p data-anchor-id="1qw5">2019-11-16 晚上12:00</p><div class="md-section-divider"></div><h2 data-anchor-id="yj76" id="实验形式">实验形式</h2><p data-anchor-id="iunn">团队协作完成</p><div class="md-section-divider"></div><h2 data-anchor-id="8czu" id="实验步骤">实验步骤</h2><p data-anchor-id="19h1">本次实验代码及画图均在jupyter上完成。</p><p data-anchor-id="fb33"><em>利用交替最小二乘法优化</em></p><ol data-anchor-id="0fxe">
+<li>读取数据，并划分数据集（或直接用u1.base/u1.test到u5.base/u5.test）。根据原始数据填充原始评分矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-1-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 6114.3640443878285 1012.6962998086123" style="width: 14.247ex; height: 2.317ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-52"></use><g transform="translate(759,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="600" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-75" x="1101" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="1673" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="2143" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-72" x="2609" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="3061" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="3530" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E" x="3809" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="4409" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="4910" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-74" x="5255" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="5617" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6D" x="6083" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="6962" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-1">R_{n\_users,n\_items}</script>，对于空值可以填充为零。</li>
+<li>初始化用户因子矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-2-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 4064.8412114049943 1012.6962998086123" style="width: 9.498ex; height: 2.317ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-50"></use><g transform="translate(642,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="600" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-75" x="1101" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="1673" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="2143" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-72" x="2609" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="3061" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="3530" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-4B" x="3809" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-2">P_{n\_users,K}</script>和物品（电影）因子矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-3-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -725.0516853480245 3946.908401507072 1033.6962998086124" style="width: 9.151ex; height: 2.432ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-51"></use><g transform="translate(791,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="600" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="1101" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-74" x="1446" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="1808" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6D" x="2274" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="3152" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-4B" x="3431" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-3">Q_{n\_item,K}</script>，其中<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-4-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 889.5 725.103370696049" style="width: 2.085ex; height: 1.737ex; vertical-align: -0.116ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-4B"></use></g></svg></span><script type="math/tex" id="MathJax-Element-4">K</script>为潜在特征数。</li>
+<li>确定损失函数和确定超参数惩罚系数<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-5-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -715.0516853480245 583.5 748.103370696049" style="width: 1.39ex; height: 1.737ex; vertical-align: -0.116ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-3BB"></use></g></svg></span><script type="math/tex" id="MathJax-Element-5">\lambda</script>。</li>
+<li>利用交替最小二乘法分解稀疏的用户评分矩阵，得到用户因子矩阵和物品（电影）因子矩阵： <br>
+4.1 固定物品因子矩阵求损失函数对用户因子矩阵的每一行（列）求偏导数，令偏导数为零更新用户因子矩阵。 <br>
+注：<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-6-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 986.8053928999522 882.5886520702876" style="width: 2.317ex; height: 2.085ex; vertical-align: -0.463ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-50"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="908" y="-213"></use></g></svg></span><script type="math/tex" id="MathJax-Element-6">P_{i}</script> = (<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-7-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -844.6203897736904 1389.6567273459227 1059.672075121715" style="width: 3.243ex; height: 2.432ex; vertical-align: -0.579ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-51"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-54" x="1119" y="488"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2217" x="1119" y="-234"></use></g></svg></span><script type="math/tex" id="MathJax-Element-7">Q_*^T</script><span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-8-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -725.0516853480245 1245.406943983867 940.103370696049" style="width: 2.896ex; height: 2.201ex; vertical-align: -0.579ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-51"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2217" x="1119" y="-213"></use></g></svg></span><script type="math/tex" id="MathJax-Element-8">Q_*</script>-<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-9-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -715.0516853480245 583.5 748.103370696049" style="width: 1.39ex; height: 1.737ex; vertical-align: -0.116ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-3BB"></use></g></svg></span><script type="math/tex" id="MathJax-Element-9">\lambda</script>E<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-10-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -854.5839083994518 2783.5463004835174 1125.6355937474764" style="width: 6.486ex; height: 2.664ex; vertical-align: -0.695ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMAIN-29"></use><g transform="translate(389,362)"><use transform="scale(0.7071067811865476)" href="#MJMAIN-2212"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-31" x="778" y="0"></use></g><g transform="translate(1393,0)"><use href="#MJMATHI-51"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-54" x="1119" y="488"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2217" x="1119" y="-234"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-10">)^{-1}Q_*^T</script><span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-11-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><span style="display: inline-block; white-space: nowrap; padding: 1px 0px;"><span style="display: inline-block; position: relative; width: 3.127ex; height: 2.201ex; vertical-align: -0.347ex;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -844.6203897736904 1357.6567273459227 1029.740635154646" style="width: 3.127ex; height: 2.432ex; position: absolute; bottom: 0ex; left: 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-52"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-54" x="1074" y="488"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2217" x="1074" y="-234"></use></g></svg></span></span></span><script type="math/tex" id="MathJax-Element-11">R_*^T</script> ，其中，<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-12-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -725.0516853480245 1245.406943983867 940.103370696049" style="width: 2.896ex; height: 2.201ex; vertical-align: -0.579ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-51"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2217" x="1119" y="-213"></use></g></svg></span><script type="math/tex" id="MathJax-Element-12">Q_*</script>为<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-13-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -725.0516853480245 791.5 940.103370696049" style="width: 1.853ex; height: 2.201ex; vertical-align: -0.579ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-51"></use></g></svg></span><script type="math/tex" id="MathJax-Element-13">Q</script>中满足<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-14-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 3426.9717342554122 1019.0602608392912" style="width: 7.992ex; height: 2.317ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-52"></use><g transform="translate(759,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-69"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="345" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6A" x="624" y="0"></use></g><use href="#MJMAIN-3E" x="1870" y="0"></use><use href="#MJMAIN-30" x="2926" y="0"></use></g></svg></span><script type="math/tex" id="MathJax-Element-14">R_{i,j}>0</script>的j行向量拼成的矩阵，<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-15-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><span style="display: inline-block; white-space: nowrap; padding: 1px 0px;"><span style="display: inline-block; position: relative; width: 2.78ex; height: 1.853ex; vertical-align: -0.347ex;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 1213.406943983867 874.103370696049" style="width: 2.78ex; height: 2.085ex; position: absolute; bottom: 0ex; left: 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-52"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2217" x="1074" y="-213"></use></g></svg></span></span></span><script type="math/tex" id="MathJax-Element-15">R_*</script>为<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-16-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 759.5 746.103370696049" style="width: 1.737ex; height: 1.737ex; vertical-align: -0.232ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-52"></use></g></svg></span><script type="math/tex" id="MathJax-Element-16">R</script>的第i行中满足<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-17-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 3426.9717342554122 1019.0602608392912" style="width: 7.992ex; height: 2.317ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-52"></use><g transform="translate(759,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-69"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="345" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6A" x="624" y="0"></use></g><use href="#MJMAIN-3E" x="1870" y="0"></use><use href="#MJMAIN-30" x="2926" y="0"></use></g></svg></span><script type="math/tex" id="MathJax-Element-17">R_{i,j}>0</script>的值拼成的向量，E为单位矩阵（类似于线性回归中的闭式解） <br>
+4.2 固定用户因子矩阵求损失函数对物品因子矩阵的每一行（列）求偏导数，令偏导数为零更新物品因子矩阵。 <br>
+4.3 计算在验证集上的<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-18-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 3967.0160492453965 883.295758851474" style="width: 9.266ex; height: 2.085ex; vertical-align: -0.463ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-4C"></use><g transform="translate(681,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-76"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-61" x="485" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6C" x="1014" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="1313" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-64" x="1659" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-61" x="2182" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-74" x="2712" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="3073" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6F" x="3418" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E" x="3904" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-18">L_{validation}</script>，可与上一次迭代的<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-19-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 3967.0160492453965 883.295758851474" style="width: 9.266ex; height: 2.085ex; vertical-align: -0.463ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-4C"></use><g transform="translate(681,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-76"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-61" x="485" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6C" x="1014" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="1313" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-64" x="1659" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-61" x="2182" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-74" x="2712" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="3073" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6F" x="3418" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E" x="3904" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-19">L_{validation}</script>比较判断是否收敛。</li>
+<li>重复步骤4. 若干次，得到满意的用户因子矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-20-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 751.5 725.103370696049" style="width: 1.737ex; height: 1.737ex; vertical-align: -0.116ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-50"></use></g></svg></span><script type="math/tex" id="MathJax-Element-20">P</script>和物品因子矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-21-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -725.0516853480245 791.5 940.103370696049" style="width: 1.853ex; height: 2.201ex; vertical-align: -0.579ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-51"></use></g></svg></span><script type="math/tex" id="MathJax-Element-21">Q</script>，<strong>画出<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-22-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 3967.0160492453965 883.295758851474" style="width: 9.266ex; height: 2.085ex; vertical-align: -0.463ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-4C"></use><g transform="translate(681,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-76"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-61" x="485" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6C" x="1014" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="1313" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-64" x="1659" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-61" x="2182" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-74" x="2712" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="3073" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6F" x="3418" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E" x="3904" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-22">L_{validation}</script>随迭代次数变化的曲线图</strong>。</li>
+<li>将用户因子矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-23-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 4064.8412114049943 1012.6962998086123" style="width: 9.498ex; height: 2.317ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-50"></use><g transform="translate(642,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="600" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-75" x="1101" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="1673" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="2143" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-72" x="2609" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="3061" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="3530" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-4B" x="3809" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-23">P_{n\_users,K}</script>与物品因子矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-24-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -725.0516853480245 3946.908401507072 1033.6962998086124" style="width: 9.151ex; height: 2.432ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-51"></use><g transform="translate(791,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="600" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="1101" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-74" x="1446" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="1808" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6D" x="2274" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="3152" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-4B" x="3431" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-24">Q_{n\_item,K}</script>的转置相乘即可得到最终的评分预测矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-25-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -943.8583648847041 6114.3640443878285 1252.502979345292" style="width: 14.247ex; height: 2.896ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-52"></use><use href="#MJMAIN-5E" x="212" y="228"></use><g transform="translate(759,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="600" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-75" x="1101" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="1673" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="2143" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-72" x="2609" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="3061" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="3530" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E" x="3809" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="4409" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="4910" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-74" x="5255" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="5617" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6D" x="6083" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="6962" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-25">\hat{R}_{n\_users,n\_items}</script>。</li>
+</ol><p data-anchor-id="kbt7"><em>利用随机梯度下降方法优化（也可以使用全样本梯度下降的方法）</em></p><ol data-anchor-id="399y">
+<li>读取数据，并划分数据集（或直接用u1.base/u1.test到u5.base/u5.test）。根据原始数据填充原始评分矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-26-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 6114.3640443878285 1012.6962998086123" style="width: 14.247ex; height: 2.317ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-52"></use><g transform="translate(759,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="600" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-75" x="1101" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="1673" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="2143" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-72" x="2609" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="3061" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="3530" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E" x="3809" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="4409" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="4910" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-74" x="5255" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="5617" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6D" x="6083" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="6962" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-26">R_{n\_users,n\_items}</script>，对于空值可以填充为零。</li>
+<li>初始化用户因子矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-27-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 4064.8412114049943 1012.6962998086123" style="width: 9.498ex; height: 2.317ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-50"></use><g transform="translate(642,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="600" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-75" x="1101" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="1673" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="2143" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-72" x="2609" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="3061" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="3530" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-4B" x="3809" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-27">P_{n\_users,K}</script>和物品（电影）因子矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-28-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -725.0516853480245 3946.908401507072 1033.6962998086124" style="width: 9.151ex; height: 2.432ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-51"></use><g transform="translate(791,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="600" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="1101" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-74" x="1446" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="1808" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6D" x="2274" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="3152" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-4B" x="3431" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-28">Q_{n\_item,K}</script>，其中<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-29-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 889.5 725.103370696049" style="width: 2.085ex; height: 1.737ex; vertical-align: -0.116ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-4B"></use></g></svg></span><script type="math/tex" id="MathJax-Element-29">K</script>为潜在特征数。</li>
+<li>确定损失函数和确定超参数学习率<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-30-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -464.0516853480245 503.5 701.103370696049" style="width: 1.158ex; height: 1.622ex; vertical-align: -0.695ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-3B7"></use></g></svg></span><script type="math/tex" id="MathJax-Element-30">\eta</script>和惩罚系数<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-31-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -715.0516853480245 583.5 748.103370696049" style="width: 1.39ex; height: 1.737ex; vertical-align: -0.116ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-3BB"></use></g></svg></span><script type="math/tex" id="MathJax-Element-31">\lambda</script>。</li>
+<li>利用随机梯度下降法分解稀疏的用户评分矩阵，得到用户因子矩阵和物品（电影）因子矩阵： <br>
+4.1 随机选择用户评分矩阵中的一个sample； <br>
+4.2 计算该sample的损失函数值对用户因子矩阵某一行（列）和物品因子矩阵某一行（列）的梯度； <br>
+4.3 梯度下降更新<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-32-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 4064.8412114049943 1012.6962998086123" style="width: 9.498ex; height: 2.317ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-50"></use><g transform="translate(642,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="600" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-75" x="1101" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="1673" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="2143" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-72" x="2609" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="3061" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="3530" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-4B" x="3809" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-32">P_{n\_users,K}</script>一行（列）与<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-33-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -725.0516853480245 3946.908401507072 1033.6962998086124" style="width: 9.151ex; height: 2.432ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-51"></use><g transform="translate(791,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="600" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="1101" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-74" x="1446" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="1808" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6D" x="2274" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="3152" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-4B" x="3431" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-33">Q_{n\_item,K}</script>一行（列）； <br>
+4.4 计算在验证集上的<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-34-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 3967.0160492453965 883.295758851474" style="width: 9.266ex; height: 2.085ex; vertical-align: -0.463ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-4C"></use><g transform="translate(681,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-76"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-61" x="485" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6C" x="1014" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="1313" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-64" x="1659" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-61" x="2182" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-74" x="2712" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="3073" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6F" x="3418" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E" x="3904" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-34">L_{validation}</script>，可与上一次迭代的<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-35-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 3967.0160492453965 883.295758851474" style="width: 9.266ex; height: 2.085ex; vertical-align: -0.463ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-4C"></use><g transform="translate(681,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-76"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-61" x="485" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6C" x="1014" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="1313" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-64" x="1659" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-61" x="2182" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-74" x="2712" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="3073" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6F" x="3418" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E" x="3904" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-35">L_{validation}</script>比较判断是否收敛。</li>
+<li>重复步骤4. 若干次，得到满意的用户因子矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-36-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 751.5 725.103370696049" style="width: 1.737ex; height: 1.737ex; vertical-align: -0.116ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-50"></use></g></svg></span><script type="math/tex" id="MathJax-Element-36">P</script>和物品因子矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-37-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -725.0516853480245 791.5 940.103370696049" style="width: 1.853ex; height: 2.201ex; vertical-align: -0.579ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-51"></use></g></svg></span><script type="math/tex" id="MathJax-Element-37">Q</script>，<strong>画出<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-38-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 3967.0160492453965 883.295758851474" style="width: 9.266ex; height: 2.085ex; vertical-align: -0.463ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-4C"></use><g transform="translate(681,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-76"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-61" x="485" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6C" x="1014" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="1313" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-64" x="1659" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-61" x="2182" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-74" x="2712" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="3073" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6F" x="3418" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E" x="3904" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-38">L_{validation}</script>随迭代次数变化的曲线图</strong>。</li>
+<li>将用户因子矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-39-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -704.0516853480245 4064.8412114049943 1012.6962998086123" style="width: 9.498ex; height: 2.317ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-50"></use><g transform="translate(642,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="600" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-75" x="1101" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="1673" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="2143" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-72" x="2609" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="3061" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="3530" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-4B" x="3809" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-39">P_{n\_users,K}</script>与物品因子矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-40-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -725.0516853480245 3946.908401507072 1033.6962998086124" style="width: 9.151ex; height: 2.432ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-51"></use><g transform="translate(791,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="600" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="1101" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-74" x="1446" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="1808" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6D" x="2274" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="3152" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-4B" x="3431" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-40">Q_{n\_item,K}</script>的转置相乘即可得到最终的评分预测矩阵<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-41-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -943.8583648847041 6114.3640443878285 1252.502979345292" style="width: 14.247ex; height: 2.896ex; vertical-align: -0.811ex; margin: 1px 0px;"><g stroke="black" fill="black" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use href="#MJMATHI-52"></use><use href="#MJMAIN-5E" x="212" y="228"></use><g transform="translate(759,-150)"><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="600" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-75" x="1101" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="1673" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="2143" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-72" x="2609" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="3061" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-2C" x="3530" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6E" x="3809" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMAIN-5F" x="4409" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-69" x="4910" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-74" x="5255" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-65" x="5617" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-6D" x="6083" y="0"></use><use transform="scale(0.7071067811865476)" href="#MJMATHI-73" x="6962" y="0"></use></g></g></svg></span><script type="math/tex" id="MathJax-Element-41">\hat{R}_{n\_users,n\_items}</script>。</li>
+</ol><p data-anchor-id="eqcd"><strong>本次实验选择一种方法（如本次指导中提到的SGD和ALS，或者你在网上看到的其他方法，使用其他方法的需要注明来源）完成即可。</strong> <br>
+整理实验结果并完成实验报告。 <br>
+感兴趣的同学自行探索推荐系统的其它任务和功能。</p><p data-anchor-id="v851">整理实验结果并完成实验报告（实验报告模板将包含在<a href="https://github.com/LiZhenLiangLee/ML2019-lab-03" target="_blank">示例仓库</a>中）。</p><div class="md-section-divider"></div><h2 data-anchor-id="r1go" id="评分标准">评分标准</h2><table data-anchor-id="cd9h" class="table table-striped-white table-bordered">
+<thead>
+<tr>
+ <th>评分项</th>
+ <th>占比</th>
+ <th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+ <td>出勤</td>
+ <td>40%</td>
+ <td>特殊情况可向学院请假</td>
+</tr>
+<tr>
+ <td>代码有效</td>
+ <td>20%</td>
+ <td>代码可以编译通过，没有任何编译错误</td>
+</tr>
+<tr>
+ <td>实验报告</td>
+ <td>30%</td>
+ <td>是否按照实验模板填写</td>
+</tr>
+<tr>
+ <td>代码规范</td>
+ <td>10%</td>
+ <td>主要考核代码变量命名是否规范</td>
+</tr>
+</tbody></table><div class="md-section-divider"></div><h2 data-anchor-id="w0bz" id="提交方式">提交方式</h2><div class="md-section-divider"></div><h2 data-anchor-id="kh7g" id="提交流程">提交流程</h2><ol data-anchor-id="7lkk">
+<li>访问<a href="http://222.201.187.247:7001/" target="_blank">222.201.187.247:7001</a></li>
+<li>点击对应的提交入口</li>
+<li>填写自己的姓名、学号，上传pdf格式的报告和zip格式的代码压缩包</li>
+</ol><div class="md-section-divider"></div><h2 data-anchor-id="udcr" id="注意事项">注意事项</h2><ul data-anchor-id="m34u">
+<li>实验报告和代码可以多次上传，多次上传会覆盖之前提交的文件。</li>
+<li>上传之后可以刷新页面，在下面的文件列表里面检查是否上传成功。</li>
+<li>助教会在实验截止时间保存所有上传的结果，截止时间之后上传的文件无效。</li>
+<li>如果用Word编写实验报告，需导出成pdf格式。</li>
+<li>代码文件打包格式必须为zip，请不要提交rar格式的压缩文件。</li>
+<li>提交网址只能校园网访问。</li>
+<li>代码用python语言写，实验报告评分标准英文好于中文，latex好于word。</li>
+</ul><hr><p data-anchor-id="1lrh">有任何的意见或者建议都可以直接在qq群中向助教反映。</p><div class="md-section-divider"></div><h2 data-anchor-id="rzdm" id="参考资料">参考资料</h2><ol data-anchor-id="yvqu">
+<li><a href="http://www.quuxlabs.com/blog/2010/09/matrix-factorization-a-simple-tutorial-and-implementation-in-python/" target="_blank">Matrix Factorization: A Simple Tutorial and Implementation in Python</a></li>
+<li>Tan, W., Cao, L., &amp; Fong, L. (2016, May). Faster and cheaper: Parallelizing large-scale matrix factorization on gpus. In Proceedings of the 25th ACM International Symposium on High-Performance Parallel and Distributed Computing (pp. 219-230). ACM.</li>
+<li>Xie, X., Tan, W., Fong, L. L., &amp; Liang, Y. (2017, June). CuMF_SGD: Parallelized Stochastic Gradient Descent for Matrix Factorization on GPUs. In Proceedings of the 26th International Symposium on High-Performance Parallel and Distributed Computing (pp. 79-92). ACM.</li>
+</ol></div>
+    <div class="remark-icons"><div class="remark-icon unselectable remark-icon-empty" style="top: 106.818px; left: 1262.5px; display: none;" data-anchor-id="gqbc">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count">+</span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="f9af">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="top:255.99432373046875px;left:1262.5px;" data-anchor-id="anqw">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count">+</span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="hz34">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="cfao">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="bn58">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="xhe6">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="0uqv">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="pk58">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="twx4">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="bqr8">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="3kzt">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="svym">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="zjth">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="1qw5">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="yj76">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="iunn">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="8czu">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="19h1">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="fb33">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="0fxe">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="kbt7">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="399y">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="eqcd">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="v851">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="r1go">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="cd9h">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="w0bz">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="kh7g">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="7lkk">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="udcr">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="m34u">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="1lrh">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="rzdm">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="yvqu">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div></div>
+</div>
+
+<!--in page preview buttons. -->
+<div class="in-page-preview-buttons in-page-preview-buttons-full-reader">
+    <ul>
+        <li class="in-page-button dropdown" id="preview-toc-button" title="内容目录 Ctrl+Alt+O">
+            <span class="dropdown-toggle icon-list" data-toggle="dropdown" style="color: rgba(102, 128, 153, 0.45);"></span>
+            <div id="toc-list" class="dropdown-menu theme pull-right theme-white"> <!-- Add theme means this element will be changed when apply theme color. -->
+                <h3>内容目录</h3>
+                <hr>
+                <div class="table-of-contents"><div class="toc">
+<ul>
+<li><a href="https://www.zybuluo.com/mymy/note/1621347#%E5%9F%BA%E4%BA%8E%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3%E7%9A%84%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F">基于矩阵分解的推荐系统</a><ul>
+<li><a href="https://www.zybuluo.com/mymy/note/1621347#%E5%AE%9E%E9%AA%8C%E7%9B%AE%E7%9A%84">实验目的</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621347#%E6%95%B0%E6%8D%AE%E9%9B%86%E6%8F%8F%E8%BF%B0">数据集描述</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621347#%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83">实验环境</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621347#%E5%AE%9E%E9%AA%8C%E6%97%B6%E9%97%B4%E5%8F%8A%E5%9C%B0%E7%82%B9">实验时间及地点</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621347#%E6%8F%90%E4%BA%A4%E6%88%AA%E6%AD%A2%E6%97%B6%E9%97%B4">提交截止时间</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621347#%E5%AE%9E%E9%AA%8C%E5%BD%A2%E5%BC%8F">实验形式</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621347#%E5%AE%9E%E9%AA%8C%E6%AD%A5%E9%AA%A4">实验步骤</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621347#%E8%AF%84%E5%88%86%E6%A0%87%E5%87%86">评分标准</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621347#%E6%8F%90%E4%BA%A4%E6%96%B9%E5%BC%8F">提交方式</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621347#%E6%8F%90%E4%BA%A4%E6%B5%81%E7%A8%8B">提交流程</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621347#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">注意事项</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621347#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99">参考资料</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div id="reader-full-toolbar" class="reader-full-toolbar-shown" style="padding-top: 0;">
+    <ul id="reader-full-toolbar-home" class="preview-button-row">
+        <li class="preview-button-full-reader" id="preview-editor-button" title="撰写文本 Ctrl+Alt+M">
+            <span class="icon-pencil" style="color: rgb(187, 187, 187);"></span>
+        </li>
+    </ul>
+    <ul id="preview-button-row" class="preview-button-row">
+        <li class="preview-button-full-reader dropdown" id="preview-list-button" title="文本列表 Ctrl+Alt+F">
+            <span class="dropdown-toggle icon-reorder" data-toggle="dropdown" style="color: rgb(187, 187, 187);"></span>
+            <ul id="file-list" class="dropdown-menu theme-black pull-right" role="menu" style="max-height: 662px;">
+                    <li>
+                    <ul class="tag-list">
+                        <li class="tag-item item" tag-name="实验">
+                            <span class="pull-left"><i class="icon-tag"></i><span class="tag-name">实验</span></span>
+                            <span class="tag-count pull-right">13</span>
+                            <div class="clearfix"></div>
+                        </li>
+                            
+    <li class="file-item item" file-created-date="2019-11-05 15:39:35">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1630799" title="【已发布】 2019-11-05 15:39">
+        <i class="icon-share-sign"></i>
+        <span id="1630799">成语阅读理解</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 15:00:55">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621355" title="【已发布】 2019-11-04 16:08">
+        <i class="icon-share-sign"></i>
+        <span id="1621355">Face Detection Based on Neural Network</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 15:00:38">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621354" title="【已发布】 2019-11-04 16:07">
+        <i class="icon-share-sign"></i>
+        <span id="1621354">基于神经网络的人脸检测</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:51:53">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621348" title="【已发布】 2019-10-19 14:56">
+        <i class="icon-share-sign"></i>
+        <span id="1621348">Recommender System Based on Matrix Decomposition</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:51:31">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621347" title="【已发布】 2019-10-19 14:57">
+        <i class="icon-share-sign"></i>
+        <span id="1621347" class="whiter-on-black">基于矩阵分解的推荐系统</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:47:31">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621341" title="【已发布】 2019-10-15 19:01">
+        <i class="icon-share-sign"></i>
+        <span id="1621341">XGBoost Experiment Manual</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:46:50">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621336" title="【已发布】 2019-10-15 19:01">
+        <i class="icon-share-sign"></i>
+        <span id="1621336">XGBoost 实验手册</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:42:26">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621331" title="【已发布】 2019-10-31 22:47">
+        <i class="icon-share-sign"></i>
+        <span id="1621331">Face Detection Based on AdaBoost Algorithm</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:41:13">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621330" title="【已发布】 2019-10-31 22:47">
+        <i class="icon-share-sign"></i>
+        <span id="1621330">基于AdaBoost算法的人脸检测</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:35:16">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621326" title="【已发布】 2019-10-19 23:05">
+        <i class="icon-share-sign"></i>
+        <span id="1621326">Logistic Regression and Support Vector Machine</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:33:04">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621325" title="【已发布】 2019-10-19 22:59">
+        <i class="icon-share-sign"></i>
+        <span id="1621325">逻辑回归和支持向量机</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:23:52">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621320" title="【已发布】 2019-10-19 14:55">
+        <i class="icon-share-sign"></i>
+        <span id="1621320">Linear Regression and Stochastic Gradient Descent</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:18:10">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621311" title="【已发布】 2019-10-19 14:54">
+        <i class="icon-share-sign"></i>
+        <span id="1621311">线性回归与随机梯度下降</span>
+        </a>
+    </li>
+
+                    </ul>
+                    </li>
+                    <li>
+                    <ul class="tag-list">
+                        <li class="tag-item item" tag-name="机器学习">
+                            <span class="pull-left"><i class="icon-tag"></i><span class="tag-name">机器学习</span></span>
+                            <span class="tag-count pull-right">13</span>
+                            <div class="clearfix"></div>
+                        </li>
+                            
+    <li class="file-item item" file-created-date="2019-11-05 15:39:35">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1630799" title="【已发布】 2019-11-05 15:39">
+        <i class="icon-share-sign"></i>
+        <span id="1630799">成语阅读理解</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 15:00:55">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621355" title="【已发布】 2019-11-04 16:08">
+        <i class="icon-share-sign"></i>
+        <span id="1621355">Face Detection Based on Neural Network</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 15:00:38">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621354" title="【已发布】 2019-11-04 16:07">
+        <i class="icon-share-sign"></i>
+        <span id="1621354">基于神经网络的人脸检测</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:51:53">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621348" title="【已发布】 2019-10-19 14:56">
+        <i class="icon-share-sign"></i>
+        <span id="1621348">Recommender System Based on Matrix Decomposition</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:51:31">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621347" title="【已发布】 2019-10-19 14:57">
+        <i class="icon-share-sign"></i>
+        <span id="1621347" class="whiter-on-black">基于矩阵分解的推荐系统</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:47:31">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621341" title="【已发布】 2019-10-15 19:01">
+        <i class="icon-share-sign"></i>
+        <span id="1621341">XGBoost Experiment Manual</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:46:50">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621336" title="【已发布】 2019-10-15 19:01">
+        <i class="icon-share-sign"></i>
+        <span id="1621336">XGBoost 实验手册</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:42:26">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621331" title="【已发布】 2019-10-31 22:47">
+        <i class="icon-share-sign"></i>
+        <span id="1621331">Face Detection Based on AdaBoost Algorithm</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:41:13">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621330" title="【已发布】 2019-10-31 22:47">
+        <i class="icon-share-sign"></i>
+        <span id="1621330">基于AdaBoost算法的人脸检测</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:35:16">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621326" title="【已发布】 2019-10-19 23:05">
+        <i class="icon-share-sign"></i>
+        <span id="1621326">Logistic Regression and Support Vector Machine</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:33:04">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621325" title="【已发布】 2019-10-19 22:59">
+        <i class="icon-share-sign"></i>
+        <span id="1621325">逻辑回归和支持向量机</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:23:52">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621320" title="【已发布】 2019-10-19 14:55">
+        <i class="icon-share-sign"></i>
+        <span id="1621320">Linear Regression and Stochastic Gradient Descent</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:18:10">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621311" title="【已发布】 2019-10-19 14:54">
+        <i class="icon-share-sign"></i>
+        <span id="1621311">线性回归与随机梯度下降</span>
+        </a>
+    </li>
+
+                    </ul>
+                    </li>
+            </ul>
+            <ul id="file-list-topbar" class="dropdown-menu theme-black pull-right" role="menu">
+                <li id="search-file-bar">
+                    <i class="icon-search icon-large"></i>
+                    <input type="text" id="search-file-textbox" placeholder="搜索 mymy 的文稿标题， * 显示全部">
+                    <i class="icon-level-down icon-rotate-90 icon-large"></i>
+                </li>
+                <li id="tag-file-bar">
+                    以下【标签】将用于标记这篇文稿：
+                </li>
+            </ul>
+        </li>
+        <li class="preview-button-full-reader" id="preview-theme-button" title="主题切换 Ctrl+Alt+Y">
+            <span class="icon-adjust" style="color: rgb(187, 187, 187);"></span>
+        </li>
+        <li class="preview-button-full-reader" id="preview-fullscreen-button" title="全屏模式 F11">
+            <span class="icon-fullscreen" style="color: rgb(187, 187, 187);"></span>
+        </li>
+        <li class="preview-button-full-reader wmd-spacer"></li>
+        <li class="preview-button-full-reader dropdown" id="preview-about-button" title="关于本站">
+            <span class="dropdown-toggle icon-info-sign" data-toggle="dropdown" data-hover="dropdown" data-delay="100" data-close-others="true" style="color: rgb(187, 187, 187);"></span>
+            <ul id="about-menu" class="dropdown-menu theme-black pull-right" role="menu">
+                <li title="下载全平台客户端"><a tabindex="-1" href="https://www.zybuluo.com/cmd" target="_blank"><i class="icon-laptop"></i>下载客户端</a></li>
+                <li title="@ghosert"><a tabindex="-1" href="http://www.weibo.com/ghosert" target="_blank"><i class="icon-weibo"></i>关注开发者</a></li>
+                <li title=""><a tabindex="-1" href="https://github.com/ghosert/cmd-editor/issues" target="_blank"><i class="icon-github-alt"></i>报告问题，建议</a></li>
+                <li title="support@zybuluo.com"><a tabindex="-1" href="mailto:support@zybuluo.com" target="_blank"><i class="icon-envelope"></i>联系我们</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<ul id="reader-full-toolbar-tail" class="reader-full-toolbar-tail-shown">
+    <li class="preview-button-full-reader" id="preview-hidden-button" title="隐藏工具栏 Ctrl+Alt+I">
+        <span class="icon-chevron-sign-right" style="color: rgb(187, 187, 187);"></span>
+    </li>
+</ul>
+
+
+
+
+
+
+<!-- side remark, hidden when loading. -->
+<div class="remark-list side-remark-hidden">
+    <div class="remark-items"></div>
+    <div class="leave-remark unselectable"><span class="icon-plus-sign-alt"></span><span>添加新批注</span></div>
+    <div class="new-remark">
+    <div class="remark-head"><a><img src="./基于矩阵分解的推荐系统 - 作业部落 Cmd Markdown 编辑阅读器_files/default-head.jpg" style="width: 32px; height: 32px;"></a></div>
+    <div class="remark-author unselectable"><strong></strong></div>
+    <div class="remark-editor" contenteditable="true" spellcheck="false"></div>
+    <!-- this will be filled up by js.
+    <div class="inline-error">402/400</div> for new remark
+    <div class="inline-error">202/200</div> for new reply
+    -->
+    <div class="remark-footer unselectable">
+        <button class="remark-save btn-link">保存</button>
+        <button class="remark-cancel btn-link">取消</button>
+    </div>
+
+        <!-- clone the template $('.new-remark-reply').html() to here.-->
+        <div class="remark-notice">在作者公开此批注前，只有你和作者可见。</div>
+    </div>
+</div>
+
+<!-- template for new remark/reply -->
+<div class="new-remark-reply side-remark-hidden">
+    <div class="remark-head"><a><img src="./基于矩阵分解的推荐系统 - 作业部落 Cmd Markdown 编辑阅读器_files/default-head.jpg"></a></div>
+    <div class="remark-author unselectable"></div>
+    <div class="remark-editor" contenteditable="true" spellcheck="false"></div>
+    <!-- this will be filled up by js.
+    <div class="inline-error">402/400</div> for new remark
+    <div class="inline-error">202/200</div> for new reply
+    -->
+    <div class="remark-footer unselectable">
+        <button class="remark-save btn-link">保存</button>
+        <button class="remark-cancel btn-link">取消</button>
+    </div>
+</div>
+
+<!-- template for .remark-item/.remark-reply -->
+<div class="remark-item-reply side-remark-hidden">
+    <div class="remark-head"><a><img src="./基于矩阵分解的推荐系统 - 作业部落 Cmd Markdown 编辑阅读器_files/default-head.jpg"></a></div>
+    <div class="remark-author unselectable"></div>
+    <div class="remark-delete-link unselectable"><span class="icon-remove"></span></div> <!--This is mainly for deleting remark-reply, shown when author/remark hovering on remark-reply.-->
+    <div class="remark-editor" contenteditable="true" spellcheck="false"></div>
+    <!-- this will be filled up by js.
+    <div class="inline-error">402/400</div> for new remark
+    <div class="inline-error">202/200</div> for new reply
+    -->
+    <div class="remark-footer unselectable">
+        <button class="remark-edit btn-link">修改</button>
+        <button class="remark-save btn-link">保存</button>
+        <button class="remark-cancel btn-link">取消</button>
+        <button class="remark-delete btn-link">删除</button>
+    </div>
+</div>
+
+<!-- template for remark-item-->
+<div class="remark-item side-remark-hidden" data-rand-id="" data-version-id="">
+    <div class="remark-published-link unselectable"><span class="icon-link icon-rotate-90"></span></div>
+    <ul class="remark-options theme unselectable theme-white">
+        <li class="remark-private"><span class="icon-eye-close"></span><span>私有</span></li>
+        <li class="remark-public"><span class="icon-group"></span><span>公开</span></li>
+        <li class="remark-delete"><span class="icon-remove"></span><span>删除</span></li>
+    </ul>
+
+    <!-- clone the template $('.remark-item-reply').html() to here.-->
+
+    <button class="remark-reply-view-more btn-link">查看更早的 5 条回复</button>
+    <div class="remark-replies">
+        <!--
+        <div class="remark-reply">
+            clone the template $('.remark-item-reply').html() to here.
+        </div>
+        -->
+    </div>
+
+    <div class="leave-reply unselectable"><span>回复批注</span></div>
+    <div class="new-reply">
+        <!-- clone the template $('.new-remark-reply').html() to here.-->
+    </div>
+</div>
+
+<!-- jiawzhang NOTICE: .remark-icons will be put to mdeditor.mako and user_note.mako, where next to .wmd-preview -->
+<!-- <div class="remark-icons"></div> -->
+
+<!-- template for remark-icon -->
+<div class="remark-icon unselectable side-remark-hidden remark-icon-empty" style="display: none;">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div>
+
+
+<!-- canvas, hidden always, this is used to convert svg to canvas and then convert canvas to png. -->
+<canvas id="svg-canvas-image" class="editor-reader-hidden-always"></canvas>
+
+<!-- This is the image panel to hold enlarged image/svg. -->
+<div id="large-image-panel">
+    <img id="large-image">
+</div>
+
+
+    
+
+
+    <!-- Hidden Popup Modal -->
+    <div id="notification-popup-window" class="modal hide fade theme theme-white" tabindex="-1" role="dialog" aria-labelledby="notification-title" aria-hidden="true">
+        <div class="modal-header theme theme-white">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="notification-title">通知</h3>
+        </div>
+        <div class="modal-body theme theme-white">
+            <p></p>
+        </div>
+        <div class="modal-footer theme theme-white">
+            <button id="notification-cancel" class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+            <button id="notification-confirm" class="btn btn-primary">确认</button>
+        </div>
+    </div>
+
+    <!-- zybuluo's foot -->
+
+    <script src="./基于矩阵分解的推荐系统 - 作业部落 Cmd Markdown 编辑阅读器_files/288313bb.base.lib.min.js.下载"></script>
+
+    <script>
+        Namespace('com.zybuluo.base');
+        com.zybuluo.base.initData = {
+            globalPromptUrl: "https://www.zybuluo.com/global/prompt",
+        };
+    </script>
+
+    
+    <!--mathjax-->
+    <!--blacker: 1 below means font weight.-->
+    <script type="text/x-mathjax-config;executed=true">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ["\\(","\\)"]], processEscapes: true }, TeX: { equationNumbers: { autoNumber: "AMS" } }, messageStyle: "none", SVG: { blacker: 1 }});
+    </script>
+    <script src="./基于矩阵分解的推荐系统 - 作业部落 Cmd Markdown 编辑阅读器_files/mathJax.js.下载"></script>
+    <!--mathjax source code is here: https://github.com/mathjax/MathJax.-->
+    <script src="./基于矩阵分解的推荐系统 - 作业部落 Cmd Markdown 编辑阅读器_files/mathJax.js(1).下载"></script>
+
+    <script>
+        Namespace('com.zybuluo.mdeditor.layout');
+        com.zybuluo.mdeditor.layout.initData = {
+            // '' means not logged in, otherwise the logged in username, for mdeditor.mako, this value will be reset in render.js otherwise, for user_note.mako, it's rendered by server side.
+            loggedInUsername: '',
+            isPageOwner: 'False' === 'True' ? true : false,
+            loginComeFromUrl: 'https://www.zybuluo.com/login?return_to=https%3A%2F%2Fwww.zybuluo.com%2Fmymy%2Fnote%2F1621347',
+            noteRemarksUrl: "https://www.zybuluo.com/note/1621347/remarks", 
+            newNoteRemarkUrl: "https://www.zybuluo.com/note/1621347/remark/new", 
+            updateNoteRemarkUrl: "https://www.zybuluo.com/note/1621347/remark/update", 
+            deleteNoteRemarkUrl: "https://www.zybuluo.com/note/1621347/remark/delete", 
+            publishNoteRemarkUrl: "https://www.zybuluo.com/note/1621347/remark/publish", 
+            newNoteRemarkReplyUrl: "https://www.zybuluo.com/note/1621347/remark_reply/new", 
+            updateNoteRemarkReplyUrl: "https://www.zybuluo.com/note/1621347/remark_reply/update", 
+            deleteNoteRemarkReplyUrl: "https://www.zybuluo.com/note/1621347/remark_reply/delete", 
+        };
+
+        // BEGIN: pace.js configuration
+        window.paceOptions = {
+            // disable others, enable for ajax call only,
+            ajax: true,
+            document: false,
+            elements: false,
+            eventLag: false,
+        };
+        // jiawzhang NOTICE: to make sure pace.js is working for any ajax call especially the jquery ajax, add 'Pace.restart()' into jquery ajax call like '$.post'
+        // Originally, pace 0.5.6 doesn't support jquery ajax, see details in: https://github.com/HubSpot/pace/issues/29
+        // END: pace.js configuration
+
+    </script>
+
+    <script src="./基于矩阵分解的推荐系统 - 作业部落 Cmd Markdown 编辑阅读器_files/7a70106e.layout.lib.min.js.下载"></script>
+
+    <script src="./基于矩阵分解的推荐系统 - 作业部落 Cmd Markdown 编辑阅读器_files/dc648f35.layout.min.js.下载"></script><div id="medium-editor-toolbar-1" class="medium-editor-toolbar"><ul id="medium-editor-toolbar-actions" class="medium-editor-toolbar-actions clearfix"><li><button data-action="remark" class=" medium-editor-button-first"><i class="icon-comment"></i></button></li><li><button data-action="highlight" class=" medium-editor-button-last"><i class="icon-pencil"></i></button></li></ul></div>
+
+
+
+    
+
+    <!-- https://www.zybuluo.com/static/assets/mdeditor/user_note.lib.min.js -->
+    <!-- -->
+
+    <script>
+        Namespace('com.zybuluo.mdeditor.user_note');
+        com.zybuluo.mdeditor.user_note.initData = {
+            isLoggedIn: 'False',
+            mdeditorUrl: "https://www.zybuluo.com/mdeditor",
+            passwordPassed: 'True' === 'True' ? true : false,
+        };
+    </script>
+
+    <script src="./基于矩阵分解的推荐系统 - 作业部落 Cmd Markdown 编辑阅读器_files/6cd3112e.user_note.min.js.下载"></script>
+
+
+
+
+
+    
+</body></html>

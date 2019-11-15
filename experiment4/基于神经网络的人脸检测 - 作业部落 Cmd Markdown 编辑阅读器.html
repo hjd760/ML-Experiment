@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<!-- saved from url=(0041)https://www.zybuluo.com/mymy/note/1621354 -->
+<html class="theme theme-white"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    
+    <meta name="description" content="Cmd Markdown 编辑阅读器，支持实时同步预览，区分写作和阅读模式，支持在线存储，分享文稿网址。">
+    <meta name="author" content="Jiawei Zhang">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <title>基于神经网络的人脸检测 - 作业部落 Cmd Markdown 编辑阅读器</title>
+
+
+    <link href="https://www.zybuluo.com/static/img/favicon.png" type="image/x-icon" rel="icon">
+
+    <link href="./基于神经网络的人脸检测 - 作业部落 Cmd Markdown 编辑阅读器_files/1bc053c8.base.lib.min.css" rel="stylesheet" media="screen">
+
+
+    
+    <!-- id="prettify-style" will be used to get the link element below and change href to change prettify code, so it can't be in beginmin/endmin block. -->
+    <link id="prettify-style" href="./基于神经网络的人脸检测 - 作业部落 Cmd Markdown 编辑阅读器_files/prettify-cmd.css" type="text/css" rel="stylesheet">
+    <!--
+    <link id="mermaid-style" href="https://www.zybuluo.com/static/editor/libs/mermaid/mermaid.forest.css" type="text/css" rel="stylesheet">
+    -->
+    <link href="./基于神经网络的人脸检测 - 作业部落 Cmd Markdown 编辑阅读器_files/45c7d56d.layout.min.css" rel="stylesheet" media="screen">
+
+
+    
+
+    <script async="" src="./基于神经网络的人脸检测 - 作业部落 Cmd Markdown 编辑阅读器_files/analytics.js.下载"></script><script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-44461741-1', 'zybuluo.com');
+      ga('send', 'pageview');
+    </script>
+<style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Hover_Arrow {position: absolute; width: 15px; height: 11px; cursor: pointer}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; color: #666666}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_Menu_Close {position: absolute; width: 31px; height: 31px; top: -15px; left: -15px}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style></head>
+
+<body class="theme  theme-white pace-done"><div id="MathJax_Message" style="display: none;"></div><div class="pace  pace-inactive"><div class="pace-progress" data-progress-text="100%" data-progress="99" style="width: 100%;">
+  <div class="pace-progress-inner"></div>
+</div>
+<div class="pace-activity"></div></div>
+
+    <div id="global-prompt-alert" class="hide alert alert-warning">
+        <span id="global-prompt-message"></span>
+        <a id="close-global-prompt-alert" href="https://www.zybuluo.com/mymy/note/1621354">[关闭]</a>
+    </div>
+
+    <!-- zybuluo's body -->
+    
+
+
+
+
+
+
+
+<!-- mdeditor's body -->
+
+
+
+
+
+
+<div id="editor-reader-full" class="editor-reader-full-shown" style="position: static; padding-right: 75px;">
+    <div id="reader-full-topInfo" class="reader-full-topInfo-shown">
+        <span>
+            <code>@mymy</code>
+        </span>
+        <code><span class="article-updated-date">2019-11-04 16:07</span></code>
+        <code><span>字数 </span><span class="article-characters">2279</span></code>
+        <code><span>阅读 </span><span class="article-read">499</span></code>
+    </div>
+    <div id="wmd-preview" class="wmd-preview wmd-preview-full-reader" data-medium-element="true" style="left: 0px;"><div class="md-section-divider"></div><div class="md-section-divider"></div><h1 data-anchor-id="t5yo" id="基于神经网络的人脸检测">基于神经网络的人脸检测</h1><p data-anchor-id="f54y"><code>机器学习</code> <code>实验</code></p><hr><p data-anchor-id="718k">You can click <a href="https://www.zybuluo.com/mymy/note/1621355" target="_blank">here</a> to get the version in English.</p><div class="md-section-divider"></div><h2 data-anchor-id="my91" id="实验目的">实验目的</h2><ol data-anchor-id="6cuc">
+<li>理解和掌握基于神经网络的人脸检测方法的理论基础知识。</li>
+<li>理解<a href="https://kpzhang93.github.io/MTCNN_face_detection_alignment/paper/spl.pdf" target="_blank">MTCNN</a>人脸检测的基本流程，并加以实践。</li>
+</ol><div class="md-section-divider"></div><h2 data-anchor-id="gl7c" id="训练数据集">训练数据集</h2><p data-anchor-id="m8ak">为了训练PNet和RNet，将<a href="http://mmlab.ie.cuhk.edu.hk/projects/WIDERFace/" target="_blank">WiderFace</a>用于人脸分类和人脸边界框回归；为了训练ONet，将<a href="http://mmlab.ie.cuhk.edu.hk/projects/WIDERFace/" target="_blank">WiderFace</a>用于人脸分类和人脸边界框回归，使用<a href="http://mmlab.ie.cuhk.edu.hk/archive/CNN_FacePoint.htm" target="_blank">Training Dataset</a>用于人脸特征点回归。</p><div class="md-section-divider"></div><h2 data-anchor-id="md50" id="实验环境">实验环境</h2><p data-anchor-id="kqel"><a href="https://www.anaconda.com/download/" target="_blank">anaconda3</a> <br>
+<a href="https://pytorch.org/" target="_blank">pytorch 0.4.1</a> <br>
+<a href="https://pytorch.org/" target="_blank">torchvision</a> <br>
+<a href="https://pypi.org/project/opencv-python/" target="_blank">opencv-python</a> <br>
+<a href="https://tensorflow.google.cn/install/pip" target="_blank">tensorflow</a>(python 3.4,3.5,3.6) <br>
+tensorboard==1.10.0 <br>
+tensorboardX==1.2 <br>
+tensorflow==1.10.0</p><div class="md-section-divider"></div><h2 data-anchor-id="izfd" id="实验时间及地点">实验时间及地点</h2><p data-anchor-id="idmm">2019-11-16 下午2:00-5:20 B7-138 (谭明奎老师)</p><div class="md-section-divider"></div><h2 data-anchor-id="wpvj" id="提交截止时间">提交截止时间</h2><p data-anchor-id="sixi">2019-11-16 晚上12:00</p><div class="md-section-divider"></div><h2 data-anchor-id="5564" id="实验形式">实验形式</h2><p data-anchor-id="8wg8">团队协作完成</p><div class="md-section-divider"></div><h2 data-anchor-id="syks" id="实验步骤">实验步骤</h2><p data-anchor-id="hznr"><strong>一、获取代码</strong> <br>
+实验完整代码已给出<a href="https://github.com/xiezheng-cs/mtcnn_pytorch" target="_blank">mtcnn_pytorch</a>，可直接下载或是通过git clone命令下载。</p><div class="md-section-divider"></div><pre class="prettyprint linenums prettyprinted" data-anchor-id="hr9p" style=""><ol class="linenums"><li class="L0"><code><span class="pln">git clone https</span><span class="pun">:</span><span class="com">//github.com/xiezheng-cs/mtcnn_pytorch.git</span></code></li></ol></pre><p data-anchor-id="4frr"><strong>二、实验环境安装</strong> <br>
+1. 确保本机或是服务器已安装好<a href="https://www.anaconda.com/download/" target="_blank">anaconda3</a>环境； <br>
+2. pip或conda安装<a href="https://pytorch.org/" target="_blank">pytorch 0.4.1 和 torchvision</a>环境； <br>
+3. pip或conda安装<a href="https://pypi.org/project/opencv-python/" target="_blank">opencv-python</a>环境。 <br>
+4. pip或conda安装<a href="https://tensorflow.google.cn/install/pip" target="_blank">tensorflow</a></p><div class="md-section-divider"></div><pre class="prettyprint linenums prettyprinted" data-anchor-id="4hcl" style=""><ol class="linenums"><li class="L0"><code><span class="pln">pip install http</span><span class="pun">:</span><span class="com">//download.pytorch.org/whl/cpu/torch-0.4.1-cp36-cp36m-win_amd64.whl     # Windows</span></code></li><li class="L1"><code><span class="pln">pip install http</span><span class="pun">:</span><span class="com">//download.pytorch.org/whl/cpu/torch-0.4.1-cp36-cp36m-linux_x86_64.whl  # Linux</span></code></li><li class="L2"><code><span class="pln">pip install torchvision</span></code></li><li class="L3"><code><span class="pln">pip install opencv</span><span class="pun">-</span><span class="pln">python</span></code></li><li class="L4"><code><span class="pln">pip install </span><span class="pun">--</span><span class="pln">upgrade tensorflow</span></code></li></ol></pre><p data-anchor-id="eio9"><strong>三、简单测试给定模型</strong> <br>
+直接使用我们<a href="https://github.com/xiezheng-cs/mtcnn_pytorch/releases" target="_blank">训练好的网络模型</a>在给定的测试数据集(位于mtcnn_pytorch/data/test_images/目录下,共64张测试图片)，运行以下命令，即可在mtcnn_pytorch/data/you_result/目录下查看检测结果。</p><div class="md-section-divider"></div><pre class="prettyprint linenums prettyprinted" data-anchor-id="7ha1" style=""><ol class="linenums"><li class="L0"><code><span class="pln">cd mtcnn_pytorch</span><span class="pun">/</span></code></li><li class="L1"><code><span class="pln">python test_image</span><span class="pun">.</span><span class="pln">py</span></code></li></ol></pre><p data-anchor-id="6djw"><strong>四、训练</strong> <br>
+<strong>注意：</strong>在训练过程中，检查训练数据集路径是否与你本机或服务器存放路径一致，若不一致，则需修改相关文件代码。 <br>
+1.训练PNet网络</p><div class="md-section-divider"></div><pre class="prettyprint linenums prettyprinted" data-anchor-id="2fa6" style=""><ol class="linenums"><li class="L0"><code><span class="pln">cd mtcnn_pytorch</span></code></li><li class="L1"><code><span class="pln">python preprocessing</span><span class="pun">/</span><span class="pln">gen_pnet_data</span><span class="pun">.</span><span class="pln">py</span></code></li><li class="L2"><code><span class="pln">python preprocessing</span><span class="pun">/</span><span class="pln">assemble_pnet_imglist</span><span class="pun">.</span><span class="pln">py</span></code></li><li class="L3"><code><span class="pln">python training</span><span class="pun">/</span><span class="pln">pnet</span><span class="pun">/</span><span class="pln">train</span><span class="pun">.</span><span class="pln">py</span></code></li></ol></pre><p data-anchor-id="gkt7">2.训练RNet网络</p><div class="md-section-divider"></div><pre class="prettyprint linenums prettyprinted" data-anchor-id="v7on" style=""><ol class="linenums"><li class="L0"><code><span class="pln">cd mtcnn_pytorch</span></code></li><li class="L1"><code><span class="pln">python preprocessing</span><span class="pun">/</span><span class="pln">gen_rnet_data</span><span class="pun">.</span><span class="pln">py</span></code></li><li class="L2"><code><span class="pln">python preprocessing</span><span class="pun">/</span><span class="pln">assemble_rnet_imglist</span><span class="pun">.</span><span class="pln">py</span></code></li><li class="L3"><code><span class="pln">python training</span><span class="pun">/</span><span class="pln">rnet</span><span class="pun">/</span><span class="pln">train</span><span class="pun">.</span><span class="pln">py</span></code></li></ol></pre><p data-anchor-id="wdri">3.训练ONet网络</p><div class="md-section-divider"></div><pre class="prettyprint linenums prettyprinted" data-anchor-id="8y1t" style=""><ol class="linenums"><li class="L0"><code><span class="pln">cd mtcnn_pytorch</span></code></li><li class="L1"><code><span class="pln">python preprocessing</span><span class="pun">/</span><span class="pln">gen_landmark_48</span><span class="pun">.</span><span class="pln">py</span></code></li><li class="L2"><code><span class="pln">python preprocessing</span><span class="pun">/</span><span class="pln">gen_onet_data</span><span class="pun">.</span><span class="pln">py</span></code></li><li class="L3"><code><span class="pln">python preprocessing</span><span class="pun">/</span><span class="pln">assemble_onet_imglist</span><span class="pun">.</span><span class="pln">py</span></code></li><li class="L4"><code><span class="pln">python training</span><span class="pun">/</span><span class="pln">onet</span><span class="pun">/</span><span class="pln">train</span><span class="pun">.</span><span class="pln">py</span></code></li></ol></pre><p data-anchor-id="z72c">训练完成，即可在mtcnn_pytorch/results/目录下得到三个训练好的网络模型。</p><p data-anchor-id="wd5l"><strong>五、简单测试自己训练好的模型</strong> <br>
+在给定的测试数据集(位于mtcnn_pytorch/data/test_images/目录下,共64张测试图片)简单测试自己训练好的网络模型，运行以下命令，即可在mtcnn_pytorch/data/you_result/目录下查看检测结果。</p><div class="md-section-divider"></div><pre class="prettyprint linenums prettyprinted" data-anchor-id="fpcy" style=""><ol class="linenums"><li class="L0"><code><span class="pln">cd mtcnn_pytorch</span><span class="pun">/</span></code></li><li class="L1"><code><span class="pln">python test_youModel_images</span><span class="pun">.</span><span class="pln">py</span></code></li></ol></pre><p data-anchor-id="uxl6"><strong>注意：</strong>检查test_youModel_images.py中的模型路径是否与你训练好的模型路径一致，若不一致，则修改路径。整理实验结果并完成实验报告（实验报告模板将包含在<a href="https://github.com/LiZhenLiangLee/ML2019-lab-03" target="_blank">示例仓库</a>中）。</p><div class="md-section-divider"></div><h2 data-anchor-id="8vjc" id="评分标准">评分标准</h2><table data-anchor-id="1hp5" class="table table-striped-white table-bordered">
+<thead>
+<tr>
+ <th>评分项</th>
+ <th>占比</th>
+ <th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+ <td>出勤</td>
+ <td>40%</td>
+ <td>特殊情况可向学院请假</td>
+</tr>
+<tr>
+ <td>代码有效</td>
+ <td>20%</td>
+ <td>代码可以编译通过，没有任何编译错误</td>
+</tr>
+<tr>
+ <td>实验报告</td>
+ <td>30%</td>
+ <td>是否按照实验模板填写</td>
+</tr>
+<tr>
+ <td>代码规范</td>
+ <td>10%</td>
+ <td>主要考核代码变量命名是否规范</td>
+</tr>
+</tbody></table><div class="md-section-divider"></div><h2 data-anchor-id="wv4a" id="提交方式">提交方式</h2><div class="md-section-divider"></div><h2 data-anchor-id="59w9" id="提交流程">提交流程</h2><ol data-anchor-id="1tiz">
+<li>访问<a href="http://222.201.187.247:7001/" target="_blank">222.201.187.247:7001</a></li>
+<li>点击对应的提交入口</li>
+<li>填写自己的姓名、学号，上传pdf格式的报告和zip格式的代码压缩包</li>
+</ol><div class="md-section-divider"></div><h2 data-anchor-id="vo9k" id="注意事项">注意事项</h2><ul data-anchor-id="kvt4">
+<li>实验报告和代码可以多次上传，多次上传会覆盖之前提交的文件。</li>
+<li>上传之后可以刷新页面，在下面的文件列表里面检查是否上传成功。</li>
+<li>助教会在实验截止时间保存所有上传的结果，截止时间之后上传的文件无效。</li>
+<li>如果用Word编写实验报告，需导出成pdf格式。</li>
+<li>代码文件打包格式必须为zip，请不要提交rar格式的压缩文件。</li>
+<li>提交网址只能校园网访问。</li>
+<li>代码用python语言写，实验报告评分标准英文好于中文，latex好于word。</li>
+</ul><hr><p data-anchor-id="w0vd">有任何的意见或者建议都可以直接在qq群中向助教反映。</p></div>
+    <div class="remark-icons"><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="t5yo">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="f54y">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="top: 255.994px; left: 1262.5px; display: none;" data-anchor-id="718k">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count">+</span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="top:317.3579406738281px;left:1262.5px;" data-anchor-id="my91">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count">+</span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="6cuc">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="gl7c">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="m8ak">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="md50">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="kqel">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="izfd">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="idmm">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="wpvj">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="sixi">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="5564">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="8wg8">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="syks">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="hznr">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="hr9p">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="4frr">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="4hcl">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="eio9">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="7ha1">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="6djw">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="2fa6">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="gkt7">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="v7on">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="wdri">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="8y1t">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="z72c">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="wd5l">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="fpcy">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="uxl6">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="8vjc">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="1hp5">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="wv4a">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="59w9">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="1tiz">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="vo9k">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="kvt4">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div><div class="remark-icon unselectable remark-icon-empty" style="display: none;" data-anchor-id="w0vd">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div></div>
+</div>
+
+<!--in page preview buttons. -->
+<div class="in-page-preview-buttons in-page-preview-buttons-full-reader">
+    <ul>
+        <li class="in-page-button dropdown" id="preview-toc-button" title="内容目录 Ctrl+Alt+O">
+            <span class="dropdown-toggle icon-list" data-toggle="dropdown" style="color: rgba(102, 128, 153, 0.45);"></span>
+            <div id="toc-list" class="dropdown-menu theme pull-right theme-white"> <!-- Add theme means this element will be changed when apply theme color. -->
+                <h3>内容目录</h3>
+                <hr>
+                <div class="table-of-contents"><div class="toc">
+<ul>
+<li><a href="https://www.zybuluo.com/mymy/note/1621354#%E5%9F%BA%E4%BA%8E%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E4%BA%BA%E8%84%B8%E6%A3%80%E6%B5%8B">基于神经网络的人脸检测</a><ul>
+<li><a href="https://www.zybuluo.com/mymy/note/1621354#%E5%AE%9E%E9%AA%8C%E7%9B%AE%E7%9A%84">实验目的</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621354#%E8%AE%AD%E7%BB%83%E6%95%B0%E6%8D%AE%E9%9B%86">训练数据集</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621354#%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83">实验环境</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621354#%E5%AE%9E%E9%AA%8C%E6%97%B6%E9%97%B4%E5%8F%8A%E5%9C%B0%E7%82%B9">实验时间及地点</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621354#%E6%8F%90%E4%BA%A4%E6%88%AA%E6%AD%A2%E6%97%B6%E9%97%B4">提交截止时间</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621354#%E5%AE%9E%E9%AA%8C%E5%BD%A2%E5%BC%8F">实验形式</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621354#%E5%AE%9E%E9%AA%8C%E6%AD%A5%E9%AA%A4">实验步骤</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621354#%E8%AF%84%E5%88%86%E6%A0%87%E5%87%86">评分标准</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621354#%E6%8F%90%E4%BA%A4%E6%96%B9%E5%BC%8F">提交方式</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621354#%E6%8F%90%E4%BA%A4%E6%B5%81%E7%A8%8B">提交流程</a></li>
+<li><a href="https://www.zybuluo.com/mymy/note/1621354#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">注意事项</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div id="reader-full-toolbar" class="reader-full-toolbar-shown" style="padding-top: 0;">
+    <ul id="reader-full-toolbar-home" class="preview-button-row">
+        <li class="preview-button-full-reader" id="preview-editor-button" title="撰写文本 Ctrl+Alt+M">
+            <span class="icon-pencil" style="color: rgb(187, 187, 187);"></span>
+        </li>
+    </ul>
+    <ul id="preview-button-row" class="preview-button-row">
+        <li class="preview-button-full-reader dropdown" id="preview-list-button" title="文本列表 Ctrl+Alt+F">
+            <span class="dropdown-toggle icon-reorder" data-toggle="dropdown" style="color: rgb(187, 187, 187);"></span>
+            <ul id="file-list" class="dropdown-menu theme-black pull-right" role="menu" style="max-height: 617px;">
+                    <li>
+                    <ul class="tag-list">
+                        <li class="tag-item item" tag-name="实验">
+                            <span class="pull-left"><i class="icon-tag"></i><span class="tag-name">实验</span></span>
+                            <span class="tag-count pull-right">13</span>
+                            <div class="clearfix"></div>
+                        </li>
+                            
+    <li class="file-item item" file-created-date="2019-11-05 15:39:35">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1630799" title="【已发布】 2019-11-05 15:39">
+        <i class="icon-share-sign"></i>
+        <span id="1630799">成语阅读理解</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 15:00:55">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621355" title="【已发布】 2019-11-04 16:08">
+        <i class="icon-share-sign"></i>
+        <span id="1621355">Face Detection Based on Neural Network</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 15:00:38">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621354" title="【已发布】 2019-11-04 16:07">
+        <i class="icon-share-sign"></i>
+        <span id="1621354" class="whiter-on-black">基于神经网络的人脸检测</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:51:53">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621348" title="【已发布】 2019-10-19 14:56">
+        <i class="icon-share-sign"></i>
+        <span id="1621348">Recommender System Based on Matrix Decomposition</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:51:31">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621347" title="【已发布】 2019-10-19 14:57">
+        <i class="icon-share-sign"></i>
+        <span id="1621347">基于矩阵分解的推荐系统</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:47:31">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621341" title="【已发布】 2019-10-15 19:01">
+        <i class="icon-share-sign"></i>
+        <span id="1621341">XGBoost Experiment Manual</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:46:50">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621336" title="【已发布】 2019-10-15 19:01">
+        <i class="icon-share-sign"></i>
+        <span id="1621336">XGBoost 实验手册</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:42:26">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621331" title="【已发布】 2019-10-31 22:47">
+        <i class="icon-share-sign"></i>
+        <span id="1621331">Face Detection Based on AdaBoost Algorithm</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:41:13">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621330" title="【已发布】 2019-10-31 22:47">
+        <i class="icon-share-sign"></i>
+        <span id="1621330">基于AdaBoost算法的人脸检测</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:35:16">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621326" title="【已发布】 2019-10-19 23:05">
+        <i class="icon-share-sign"></i>
+        <span id="1621326">Logistic Regression and Support Vector Machine</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:33:04">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621325" title="【已发布】 2019-10-19 22:59">
+        <i class="icon-share-sign"></i>
+        <span id="1621325">逻辑回归和支持向量机</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:23:52">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621320" title="【已发布】 2019-10-19 14:55">
+        <i class="icon-share-sign"></i>
+        <span id="1621320">Linear Regression and Stochastic Gradient Descent</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:18:10">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621311" title="【已发布】 2019-10-19 14:54">
+        <i class="icon-share-sign"></i>
+        <span id="1621311">线性回归与随机梯度下降</span>
+        </a>
+    </li>
+
+                    </ul>
+                    </li>
+                    <li>
+                    <ul class="tag-list">
+                        <li class="tag-item item" tag-name="机器学习">
+                            <span class="pull-left"><i class="icon-tag"></i><span class="tag-name">机器学习</span></span>
+                            <span class="tag-count pull-right">13</span>
+                            <div class="clearfix"></div>
+                        </li>
+                            
+    <li class="file-item item" file-created-date="2019-11-05 15:39:35">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1630799" title="【已发布】 2019-11-05 15:39">
+        <i class="icon-share-sign"></i>
+        <span id="1630799">成语阅读理解</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 15:00:55">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621355" title="【已发布】 2019-11-04 16:08">
+        <i class="icon-share-sign"></i>
+        <span id="1621355">Face Detection Based on Neural Network</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 15:00:38">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621354" title="【已发布】 2019-11-04 16:07">
+        <i class="icon-share-sign"></i>
+        <span id="1621354" class="whiter-on-black">基于神经网络的人脸检测</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:51:53">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621348" title="【已发布】 2019-10-19 14:56">
+        <i class="icon-share-sign"></i>
+        <span id="1621348">Recommender System Based on Matrix Decomposition</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:51:31">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621347" title="【已发布】 2019-10-19 14:57">
+        <i class="icon-share-sign"></i>
+        <span id="1621347">基于矩阵分解的推荐系统</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:47:31">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621341" title="【已发布】 2019-10-15 19:01">
+        <i class="icon-share-sign"></i>
+        <span id="1621341">XGBoost Experiment Manual</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:46:50">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621336" title="【已发布】 2019-10-15 19:01">
+        <i class="icon-share-sign"></i>
+        <span id="1621336">XGBoost 实验手册</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:42:26">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621331" title="【已发布】 2019-10-31 22:47">
+        <i class="icon-share-sign"></i>
+        <span id="1621331">Face Detection Based on AdaBoost Algorithm</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:41:13">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621330" title="【已发布】 2019-10-31 22:47">
+        <i class="icon-share-sign"></i>
+        <span id="1621330">基于AdaBoost算法的人脸检测</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:35:16">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621326" title="【已发布】 2019-10-19 23:05">
+        <i class="icon-share-sign"></i>
+        <span id="1621326">Logistic Regression and Support Vector Machine</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:33:04">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621325" title="【已发布】 2019-10-19 22:59">
+        <i class="icon-share-sign"></i>
+        <span id="1621325">逻辑回归和支持向量机</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:23:52">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621320" title="【已发布】 2019-10-19 14:55">
+        <i class="icon-share-sign"></i>
+        <span id="1621320">Linear Regression and Stochastic Gradient Descent</span>
+        </a>
+    </li>
+
+                            
+    <li class="file-item item" file-created-date="2019-10-15 14:18:10">
+        <a tabindex="-1" href="https://www.zybuluo.com/mymy/note/1621311" title="【已发布】 2019-10-19 14:54">
+        <i class="icon-share-sign"></i>
+        <span id="1621311">线性回归与随机梯度下降</span>
+        </a>
+    </li>
+
+                    </ul>
+                    </li>
+            </ul>
+            <ul id="file-list-topbar" class="dropdown-menu theme-black pull-right" role="menu">
+                <li id="search-file-bar">
+                    <i class="icon-search icon-large"></i>
+                    <input type="text" id="search-file-textbox" placeholder="搜索 mymy 的文稿标题， * 显示全部">
+                    <i class="icon-level-down icon-rotate-90 icon-large"></i>
+                </li>
+                <li id="tag-file-bar">
+                    以下【标签】将用于标记这篇文稿：
+                </li>
+            </ul>
+        </li>
+        <li class="preview-button-full-reader" id="preview-theme-button" title="主题切换 Ctrl+Alt+Y">
+            <span class="icon-adjust" style="color: rgb(187, 187, 187);"></span>
+        </li>
+        <li class="preview-button-full-reader" id="preview-fullscreen-button" title="全屏模式 F11">
+            <span class="icon-fullscreen" style="color: rgb(187, 187, 187);"></span>
+        </li>
+        <li class="preview-button-full-reader wmd-spacer"></li>
+        <li class="preview-button-full-reader dropdown" id="preview-about-button" title="关于本站">
+            <span class="dropdown-toggle icon-info-sign" data-toggle="dropdown" data-hover="dropdown" data-delay="100" data-close-others="true" style="color: rgb(187, 187, 187);"></span>
+            <ul id="about-menu" class="dropdown-menu theme-black pull-right" role="menu">
+                <li title="下载全平台客户端"><a tabindex="-1" href="https://www.zybuluo.com/cmd" target="_blank"><i class="icon-laptop"></i>下载客户端</a></li>
+                <li title="@ghosert"><a tabindex="-1" href="http://www.weibo.com/ghosert" target="_blank"><i class="icon-weibo"></i>关注开发者</a></li>
+                <li title=""><a tabindex="-1" href="https://github.com/ghosert/cmd-editor/issues" target="_blank"><i class="icon-github-alt"></i>报告问题，建议</a></li>
+                <li title="support@zybuluo.com"><a tabindex="-1" href="mailto:support@zybuluo.com" target="_blank"><i class="icon-envelope"></i>联系我们</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<ul id="reader-full-toolbar-tail" class="reader-full-toolbar-tail-shown">
+    <li class="preview-button-full-reader" id="preview-hidden-button" title="隐藏工具栏 Ctrl+Alt+I">
+        <span class="icon-chevron-sign-right" style="color: rgb(187, 187, 187);"></span>
+    </li>
+</ul>
+
+
+
+
+
+
+<!-- side remark, hidden when loading. -->
+<div class="remark-list side-remark-hidden">
+    <div class="remark-items"></div>
+    <div class="leave-remark unselectable"><span class="icon-plus-sign-alt"></span><span>添加新批注</span></div>
+    <div class="new-remark">
+    <div class="remark-head"><a><img src="./基于神经网络的人脸检测 - 作业部落 Cmd Markdown 编辑阅读器_files/default-head.jpg" style="width: 32px; height: 32px;"></a></div>
+    <div class="remark-author unselectable"><strong></strong></div>
+    <div class="remark-editor" contenteditable="true" spellcheck="false"></div>
+    <!-- this will be filled up by js.
+    <div class="inline-error">402/400</div> for new remark
+    <div class="inline-error">202/200</div> for new reply
+    -->
+    <div class="remark-footer unselectable">
+        <button class="remark-save btn-link">保存</button>
+        <button class="remark-cancel btn-link">取消</button>
+    </div>
+
+        <!-- clone the template $('.new-remark-reply').html() to here.-->
+        <div class="remark-notice">在作者公开此批注前，只有你和作者可见。</div>
+    </div>
+</div>
+
+<!-- template for new remark/reply -->
+<div class="new-remark-reply side-remark-hidden">
+    <div class="remark-head"><a><img src="./基于神经网络的人脸检测 - 作业部落 Cmd Markdown 编辑阅读器_files/default-head.jpg"></a></div>
+    <div class="remark-author unselectable"></div>
+    <div class="remark-editor" contenteditable="true" spellcheck="false"></div>
+    <!-- this will be filled up by js.
+    <div class="inline-error">402/400</div> for new remark
+    <div class="inline-error">202/200</div> for new reply
+    -->
+    <div class="remark-footer unselectable">
+        <button class="remark-save btn-link">保存</button>
+        <button class="remark-cancel btn-link">取消</button>
+    </div>
+</div>
+
+<!-- template for .remark-item/.remark-reply -->
+<div class="remark-item-reply side-remark-hidden">
+    <div class="remark-head"><a><img src="./基于神经网络的人脸检测 - 作业部落 Cmd Markdown 编辑阅读器_files/default-head.jpg"></a></div>
+    <div class="remark-author unselectable"></div>
+    <div class="remark-delete-link unselectable"><span class="icon-remove"></span></div> <!--This is mainly for deleting remark-reply, shown when author/remark hovering on remark-reply.-->
+    <div class="remark-editor" contenteditable="true" spellcheck="false"></div>
+    <!-- this will be filled up by js.
+    <div class="inline-error">402/400</div> for new remark
+    <div class="inline-error">202/200</div> for new reply
+    -->
+    <div class="remark-footer unselectable">
+        <button class="remark-edit btn-link">修改</button>
+        <button class="remark-save btn-link">保存</button>
+        <button class="remark-cancel btn-link">取消</button>
+        <button class="remark-delete btn-link">删除</button>
+    </div>
+</div>
+
+<!-- template for remark-item-->
+<div class="remark-item side-remark-hidden" data-rand-id="" data-version-id="">
+    <div class="remark-published-link unselectable"><span class="icon-link icon-rotate-90"></span></div>
+    <ul class="remark-options theme unselectable theme-white">
+        <li class="remark-private"><span class="icon-eye-close"></span><span>私有</span></li>
+        <li class="remark-public"><span class="icon-group"></span><span>公开</span></li>
+        <li class="remark-delete"><span class="icon-remove"></span><span>删除</span></li>
+    </ul>
+
+    <!-- clone the template $('.remark-item-reply').html() to here.-->
+
+    <button class="remark-reply-view-more btn-link">查看更早的 5 条回复</button>
+    <div class="remark-replies">
+        <!--
+        <div class="remark-reply">
+            clone the template $('.remark-item-reply').html() to here.
+        </div>
+        -->
+    </div>
+
+    <div class="leave-reply unselectable"><span>回复批注</span></div>
+    <div class="new-reply">
+        <!-- clone the template $('.new-remark-reply').html() to here.-->
+    </div>
+</div>
+
+<!-- jiawzhang NOTICE: .remark-icons will be put to mdeditor.mako and user_note.mako, where next to .wmd-preview -->
+<!-- <div class="remark-icons"></div> -->
+
+<!-- template for remark-icon -->
+<div class="remark-icon unselectable side-remark-hidden remark-icon-empty" style="display: none;">
+    <span class="icon-stack">
+        <i class="glyph-comment"></i>
+        <span class="remark-count"></span>
+    </span>
+</div>
+
+
+<!-- canvas, hidden always, this is used to convert svg to canvas and then convert canvas to png. -->
+<canvas id="svg-canvas-image" class="editor-reader-hidden-always"></canvas>
+
+<!-- This is the image panel to hold enlarged image/svg. -->
+<div id="large-image-panel">
+    <img id="large-image">
+</div>
+
+
+    
+
+
+    <!-- Hidden Popup Modal -->
+    <div id="notification-popup-window" class="modal hide fade theme theme-white" tabindex="-1" role="dialog" aria-labelledby="notification-title" aria-hidden="true">
+        <div class="modal-header theme theme-white">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="notification-title">通知</h3>
+        </div>
+        <div class="modal-body theme theme-white">
+            <p></p>
+        </div>
+        <div class="modal-footer theme theme-white">
+            <button id="notification-cancel" class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+            <button id="notification-confirm" class="btn btn-primary">确认</button>
+        </div>
+    </div>
+
+    <!-- zybuluo's foot -->
+
+    <script src="./基于神经网络的人脸检测 - 作业部落 Cmd Markdown 编辑阅读器_files/288313bb.base.lib.min.js.下载"></script>
+
+    <script>
+        Namespace('com.zybuluo.base');
+        com.zybuluo.base.initData = {
+            globalPromptUrl: "https://www.zybuluo.com/global/prompt",
+        };
+    </script>
+
+    
+    <!--mathjax-->
+    <!--blacker: 1 below means font weight.-->
+    <script type="text/x-mathjax-config;executed=true">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ["\\(","\\)"]], processEscapes: true }, TeX: { equationNumbers: { autoNumber: "AMS" } }, messageStyle: "none", SVG: { blacker: 1 }});
+    </script>
+    <script src="./基于神经网络的人脸检测 - 作业部落 Cmd Markdown 编辑阅读器_files/mathJax.js.下载"></script>
+    <!--mathjax source code is here: https://github.com/mathjax/MathJax.-->
+    <script src="./基于神经网络的人脸检测 - 作业部落 Cmd Markdown 编辑阅读器_files/mathJax.js(1).下载"></script>
+
+    <script>
+        Namespace('com.zybuluo.mdeditor.layout');
+        com.zybuluo.mdeditor.layout.initData = {
+            // '' means not logged in, otherwise the logged in username, for mdeditor.mako, this value will be reset in render.js otherwise, for user_note.mako, it's rendered by server side.
+            loggedInUsername: '',
+            isPageOwner: 'False' === 'True' ? true : false,
+            loginComeFromUrl: 'https://www.zybuluo.com/login?return_to=https%3A%2F%2Fwww.zybuluo.com%2Fmymy%2Fnote%2F1621354',
+            noteRemarksUrl: "https://www.zybuluo.com/note/1621354/remarks", 
+            newNoteRemarkUrl: "https://www.zybuluo.com/note/1621354/remark/new", 
+            updateNoteRemarkUrl: "https://www.zybuluo.com/note/1621354/remark/update", 
+            deleteNoteRemarkUrl: "https://www.zybuluo.com/note/1621354/remark/delete", 
+            publishNoteRemarkUrl: "https://www.zybuluo.com/note/1621354/remark/publish", 
+            newNoteRemarkReplyUrl: "https://www.zybuluo.com/note/1621354/remark_reply/new", 
+            updateNoteRemarkReplyUrl: "https://www.zybuluo.com/note/1621354/remark_reply/update", 
+            deleteNoteRemarkReplyUrl: "https://www.zybuluo.com/note/1621354/remark_reply/delete", 
+        };
+
+        // BEGIN: pace.js configuration
+        window.paceOptions = {
+            // disable others, enable for ajax call only,
+            ajax: true,
+            document: false,
+            elements: false,
+            eventLag: false,
+        };
+        // jiawzhang NOTICE: to make sure pace.js is working for any ajax call especially the jquery ajax, add 'Pace.restart()' into jquery ajax call like '$.post'
+        // Originally, pace 0.5.6 doesn't support jquery ajax, see details in: https://github.com/HubSpot/pace/issues/29
+        // END: pace.js configuration
+
+    </script>
+
+    <script src="./基于神经网络的人脸检测 - 作业部落 Cmd Markdown 编辑阅读器_files/7a70106e.layout.lib.min.js.下载"></script>
+
+    <script src="./基于神经网络的人脸检测 - 作业部落 Cmd Markdown 编辑阅读器_files/dc648f35.layout.min.js.下载"></script><div id="medium-editor-toolbar-1" class="medium-editor-toolbar"><ul id="medium-editor-toolbar-actions" class="medium-editor-toolbar-actions clearfix"><li><button data-action="remark" class=" medium-editor-button-first"><i class="icon-comment"></i></button></li><li><button data-action="highlight" class=" medium-editor-button-last"><i class="icon-pencil"></i></button></li></ul></div>
+
+
+
+    
+
+    <!-- https://www.zybuluo.com/static/assets/mdeditor/user_note.lib.min.js -->
+    <!-- -->
+
+    <script>
+        Namespace('com.zybuluo.mdeditor.user_note');
+        com.zybuluo.mdeditor.user_note.initData = {
+            isLoggedIn: 'False',
+            mdeditorUrl: "https://www.zybuluo.com/mdeditor",
+            passwordPassed: 'True' === 'True' ? true : false,
+        };
+    </script>
+
+    <script src="./基于神经网络的人脸检测 - 作业部落 Cmd Markdown 编辑阅读器_files/6cd3112e.user_note.min.js.下载"></script>
+
+
+
+
+
+    
+</body></html>
